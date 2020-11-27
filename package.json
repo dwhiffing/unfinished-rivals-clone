@@ -1,0 +1,35 @@
+{
+  "name": "rivals",
+  "version": "0.0.1",
+  "description": "A game",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "webpack --config webpack.prod.js; cp -r assets dist/; cp favicon.png dist/; cp manifest.json dist/",
+    "start": "webpack-dev-server --config webpack.base.js --open",
+    "deploy": "gh-pages -d dist"
+  },
+  "author": "Daniel Whiffing <danielwhiffing@gmail.com> (http://www.infinite-ramble.com)",
+  "license": "MIT",
+  "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+  "homepage": "https://github.com/dwhiffing/rivals",
+  "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-loader": "^8.1.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "file-loader": "^6.1.0",
+    "gh-pages": "^3.1.0",
+    "html-webpack-plugin": "^4.5.0",
+    "raw-loader": "^4.0.1",
+    "terser-webpack-plugin": "^4.2.2",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^5.1.4"
+  },
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "lodash": "^4.17.20",
+    "phaser": "^3.24.1"
+  }
+}
