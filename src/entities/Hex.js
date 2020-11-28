@@ -23,6 +23,19 @@ export class Hex {
     }
   }
 
+  setPadStatus(status) {
+    this.sprite.setTint(0x000)
+    if (status === 0) {
+      this.sprite.setTint(0xff0000)
+    }
+    if (status === 1) {
+      this.sprite.setTint(0x00ff00)
+    }
+    if (status === 2) {
+      this.sprite.setTint(0xffff00)
+    }
+  }
+
   select() {
     this.active = true
     this.sprite.setFrame(1)

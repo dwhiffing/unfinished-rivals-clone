@@ -61,6 +61,13 @@ export default class extends Phaser.Scene {
         const localHex = this.rivals.hexGrid.get(hex)
         localHex.hexObject.setIndex(hex.index)
       })
+
+      _state.padStatus.forEach((padStatus) => {
+        padStatus.hexes.forEach((hex) => {
+          const localHex = this.rivals.hexGrid.get(hex)
+          localHex.hexObject.setPadStatus(padStatus.status)
+        })
+      })
     }
     updateState(this.room.state)
     this.room.onStateChange(updateState)

@@ -2,7 +2,20 @@ import { type, ArraySchema, Schema } from '@colyseus/schema'
 import { Player } from './Player'
 import { Unit } from './Unit'
 import { Hex } from './Hex'
-import { rivals } from '../../lib/rivals'
+
+export class PadStatus extends Schema {
+  @type('number')
+  status = -1
+
+  @type([Hex])
+  hexes = new ArraySchema<Hex>()
+
+  constructor(status, hexes) {
+    super()
+    this.status = status
+    this.hexes = hexes
+  }
+}
 
 export class RoomState extends Schema {
   @type([Player])
@@ -16,6 +29,9 @@ export class RoomState extends Schema {
 
   @type('number')
   charge = 0
+
+  @type([PadStatus])
+  padStatus = new ArraySchema<PadStatus>()
 
   @type([Unit])
   units = new ArraySchema<Unit>()

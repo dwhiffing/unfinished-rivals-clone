@@ -1,6 +1,8 @@
+import { ArraySchema } from '@colyseus/schema'
 import { Command } from '@colyseus/command'
-import { RoomState } from '../schema'
+import { RoomState, PadStatus } from '../schema'
 import { rivals } from '../../lib/rivals'
+import { Hex } from '../schema/Hex'
 
 export class TickCommand extends Command<RoomState> {
   validate() {
@@ -11,18 +13,21 @@ export class TickCommand extends Command<RoomState> {
     if (this.state.phaseIndex === -1) return
 
     this.state.units.forEach(moveTowardDestination)
+
     const padStatus = checkPads()
-    const leftCount = padStatus.filter((p) => p === 0).length
-    const rightCount = padStatus.filter((p) => p === 1).length
+    const leftCount = padStatus.filter((p) => p.status === 0).length
+    const rightCount = padStatus.filter((p) => p.status === 1).length
+    this.state.padStatus = new ArraySchema<PadStatus>(...padStatus)
+
     this.state.chargeIndex = -1
     if (leftCount > 0 && rightCount > 0 && rightCount === leftCount) {
       this.state.chargeIndex = 2
     } else if (leftCount > rightCount) {
       this.state.chargeIndex = 0
-      this.state.charge += 2
+      this.state.charge += 1
     } else if (rightCount > leftCount) {
       this.state.chargeIndex = 1
-      this.state.charge += 2
+      this.state.charge += 1
     }
 
     if (this.state.charge >= 100) {
@@ -54,10 +59,15 @@ const checkPads = () => {
     let status = -1
     let leftIsPresent = pad.some((h) => h.unit && h.unit.team === 0)
     let rightIsPresent = pad.some((h) => h.unit && h.unit.team === 1)
-    if (leftIsPresent && rightIsPresent) status = 2
     if (leftIsPresent) status = 0
     if (rightIsPresent) status = 1
-    padStatus.push(status)
+    if (leftIsPresent && rightIsPresent) status = 2
+    padStatus.push(
+      new PadStatus(
+        status,
+        pad.map((h) => new Hex(h.x, h.y, h.index)),
+      ),
+    )
   })
 
   return padStatus
