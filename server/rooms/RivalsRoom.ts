@@ -21,6 +21,15 @@ export class RivalsRoom extends Room<RoomState> {
         playerId: _data.playerId || client.sessionId,
       })
     })
+
+    this.clock.setInterval(() => {
+      try {
+        const command = new Commands.TickCommand()
+        command && this.dispatcher.dispatch(command)
+      } catch (e) {
+        console.error(e)
+      }
+    }, 200)
   }
 
   onAuth() {

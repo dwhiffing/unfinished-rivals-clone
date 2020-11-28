@@ -18,15 +18,20 @@ export default class extends Phaser.Scene {
 
     this.input.on('pointermove', this.onMoveMouse.bind(this))
     this.input.on('pointerdown', this.onClickMouse.bind(this))
+    this.units = []
+    this.activeUnit = null
 
     this.room.onStateChange((state) => {
       const _state = state.toJSON()
-      if (!this.node) {
-        this.node = new Unit(this, _state.units[0].x, _state.units[0].y)
-      } else {
-        const hex = this.rivals.hexGrid.get(_state.units[0])
-        this.node.tween(hex, this.rivals.getPath(this, this.node.hex, hex))
-      }
+      _state.units.forEach((unit) => {
+        const localUnit = this.units.find((u) => u.serverUnit.id === unit.id)
+        if (!localUnit) {
+          this.units.push(new Unit(this, unit))
+        } else {
+          localUnit.serverUnit = unit
+          localUnit.tween(unit.x, unit.y)
+        }
+      })
     })
   }
 
@@ -48,16 +53,17 @@ export default class extends Phaser.Scene {
     const clickedHex = this.rivals.getHexFromScreenPos(pointer)
     if (!clickedHex) return
 
-    if (this.node.active) {
-      this.node.move(clickedHex)
-      this.node.deselect()
-      return
-    }
-
-    if (clickedHex === this.node.hex && !this.node.active) {
-      this.node.select()
+    const clickedUnit = this.units.find(
+      (u) =>
+        u.serverUnit.gridX === clickedHex.x &&
+        u.serverUnit.gridY === clickedHex.y,
+    )
+    if (this.activeUnit) {
+      this.activeUnit.move(clickedHex)
+      this.activeUnit = null
+    } else if (clickedUnit) {
+      this.activeUnit = clickedUnit
+      clickedUnit.select()
     }
   }
-
-  update(time, delta) {}
 }

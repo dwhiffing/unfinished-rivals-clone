@@ -1,13 +1,16 @@
 import { Command } from '@colyseus/command'
-import { Player, RoomState } from '../schema'
+import { RoomState } from '../schema'
 
-export class MoveCommand extends Command<RoomState, { playerId: string }> {
-  validate({ playerId, name }) {
+export class MoveCommand extends Command<
+  RoomState,
+  { unitId: string; x: number; y: number }
+> {
+  validate({ unitId, x, y }) {
     return true
   }
 
-  execute({ playerId, x, y }) {
-    this.state.units[0].x = x
-    this.state.units[0].y = y
+  execute({ unitId, x, y }) {
+    this.state.units[0].destinationX = x
+    this.state.units[0].destinationY = y
   }
 }
