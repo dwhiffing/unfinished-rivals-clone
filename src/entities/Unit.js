@@ -1,16 +1,13 @@
-import * as constants from '../../lib/rivals'
-import { getScreenPos } from '../utils'
-
 export class Unit {
   constructor(scene, x, y) {
     this.scene = scene
     const hex = this.scene.rivals.hexGrid.get({ x, y })
     this.hex = hex
 
-    const screen = getScreenPos(hex.toPoint())
+    const screen = scene.rivals.getScreenPos(hex.toPoint())
     this.sprite = this.scene.add
       .sprite(screen.x, screen.y, 'node')
-      .setScale(constants.SCALED_TILE_SIZE)
+      .setScale(scene.rivals.SCALED_TILE_SIZE)
       .setAlpha(0.5)
   }
 
@@ -29,7 +26,7 @@ export class Unit {
       onComplete: () => (this.hex = hex),
     })
     path.forEach((hex) => {
-      const { x, y } = getScreenPos(hex.toPoint())
+      const { x, y } = this.scene.rivals.getScreenPos(hex.toPoint())
       timeline.add({ targets: [this.sprite], x, y, duration: 200 })
     })
     timeline.play()

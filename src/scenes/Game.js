@@ -1,6 +1,8 @@
 import { Rivals } from '../../lib/rivals'
+import { Hex } from '../entities/Hex'
 import { Unit } from '../entities/Unit'
 
+const { clientWidth, clientHeight } = document.documentElement
 export default class extends Phaser.Scene {
   constructor() {
     super({ key: 'Game' })
@@ -11,8 +13,9 @@ export default class extends Phaser.Scene {
   }
 
   create() {
-    this.rivals = new Rivals()
-    this.rivals.createGrid(this)
+    this.rivals = new Rivals(clientWidth, clientHeight)
+    this.rivals.createGrid((hex) => new Hex(this, hex))
+
     this.input.on('pointermove', this.onMoveMouse.bind(this))
     this.input.on('pointerdown', this.onClickMouse.bind(this))
 
@@ -22,24 +25,22 @@ export default class extends Phaser.Scene {
         this.node = new Unit(this, _state.units[0].x, _state.units[0].y)
       } else {
         const hex = this.rivals.hexGrid.get(_state.units[0])
-        const path = this.rivals.getPath(this, this.node.hex, hex)
-        this.node.tween(hex, path)
+        this.node.tween(hex, this.rivals.getPath(this, this.node.hex, hex))
       }
     })
   }
 
   onMoveMouse(pointer) {
-    if (!this.activeHex) {
-      const hoveredHex = this.rivals.getHexFromScreenPos(pointer)
+    if (this.activeHex) return
+    const hoveredHex = this.rivals.getHexFromScreenPos(pointer)
 
-      if (this.lastHoveredHex && !this.lastHoveredHex.active) {
-        this.lastHoveredHex.deselect()
-      }
+    if (this.lastHoveredHex && !this.lastHoveredHex.active) {
+      this.lastHoveredHex.deselect()
+    }
 
-      if (hoveredHex && hoveredHex.hexObject) {
-        this.lastHoveredHex = hoveredHex.hexObject
-        this.lastHoveredHex.hover()
-      }
+    if (hoveredHex && hoveredHex.hexObject) {
+      this.lastHoveredHex = hoveredHex.hexObject
+      this.lastHoveredHex.hover()
     }
   }
 

@@ -1,14 +1,11 @@
-import * as constants from '../../lib/rivals'
-import { getScreenPos } from '../utils'
-
 export class Hex {
   constructor(scene, hex) {
     this.scene = scene
-    const { x, y } = getScreenPos(hex.toPoint())
+    const { x, y } = scene.rivals.getScreenPos(hex.toPoint())
     this.hex = hex
     this.sprite = this.scene.add
       .sprite(x, y, 'hexagon')
-      .setScale(constants.SCALED_TILE_SIZE)
+      .setScale(scene.rivals.SCALED_TILE_SIZE)
   }
 
   select() {
