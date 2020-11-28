@@ -11,7 +11,16 @@ export class Hex {
 
   setIndex(index) {
     this.index = index
-    this.sprite.setFrame(index)
+    this.sprite.clearTint()
+    if (index === 1) {
+      this.sprite.setFrame(2)
+    }
+    if (index === 2) {
+      this.sprite.setTint(0x00ff00)
+    }
+    if (index === 3) {
+      this.sprite.setTint(0x000)
+    }
   }
 
   select() {
@@ -26,6 +35,6 @@ export class Hex {
   }
 
   hover() {
-    if (this.index === 0) this.select()
+    if (this.index !== 1) this.select()
   }
 }

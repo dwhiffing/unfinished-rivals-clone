@@ -23,6 +23,9 @@ export default class extends Phaser.Scene {
 
     this.room.onStateChange((state) => {
       const _state = state.toJSON()
+      if (!this.player && _state.players.length > 0) {
+        this.player = _state.players.find((p) => p.id === this.room.sessionId)
+      }
       _state.units.forEach((unit) => {
         const localUnit = this.units.find((u) => u.serverUnit.id === unit.id)
         if (localUnit) {
@@ -67,7 +70,10 @@ export default class extends Phaser.Scene {
     if (this.activeUnit) {
       this.activeUnit.move(clickedHex)
       this.activeUnit = null
-    } else if (clickedUnit) {
+    } else if (
+      clickedUnit &&
+      clickedUnit.serverUnit.team === this.player.team
+    ) {
       this.activeUnit = clickedUnit
       clickedUnit.select()
     }

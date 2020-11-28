@@ -10,7 +10,7 @@ export class Unit {
 
     const screen = scene.rivals.getScreenPos(hex.toPoint())
     this.sprite = this.scene.add
-      .sprite(screen.x, screen.y, 'node')
+      .sprite(screen.x, screen.y, serverUnit.team === 0 ? 'node' : 'node2')
       .setScale(scene.rivals.SCALED_TILE_SIZE)
       .setAlpha(0.5)
   }

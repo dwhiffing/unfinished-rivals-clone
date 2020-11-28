@@ -36,7 +36,7 @@ export class Unit extends Schema {
     this.gridX = x
     this.gridY = y
     this.team = team
-    this.speed = 10
+    this.speed = 20
     const screen = rivals.getScreenPosFromCoords(this.gridX, this.gridY)
     this.x = screen.x
     this.y = screen.y

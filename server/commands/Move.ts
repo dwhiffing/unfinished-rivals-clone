@@ -12,7 +12,7 @@ export class MoveCommand extends Command<
     const unit = this.state.units.find((u) => u.id === unitId)
     const player = this.state.players.find((p) => p.id === playerId)
     const hex = rivals.hexGrid.get({ x, y })
-    return unit && unit.team === player.team && hex.index === 0 && !hex.unit
+    return unit && unit.team === player.team && hex.index !== 1 && !hex.unit
   }
 
   execute({ unitId, x, y }) {

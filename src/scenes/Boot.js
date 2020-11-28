@@ -13,6 +13,7 @@ export default class extends Phaser.Scene {
     })
 
     this.load.image('node', 'assets/images/hexp.png')
+    this.load.image('node2', 'assets/images/hexg.png')
     this.load.spritesheet('hexagon', 'assets/images/hex.png', {
       frameWidth: 392,
       frameHeight: 452,

@@ -8,6 +8,7 @@ export class Hex extends Schema {
   y
 
   @type('number')
+  // 0: empty, 1: wall, 2: resources, 3: pad
   index = 0
 
   constructor(x: number, y: number, index: number) {
