@@ -1,6 +1,6 @@
 import { type, Schema } from '@colyseus/schema'
 import { rivals } from '../../lib/rivals'
-
+let id = 0
 export class Unit extends Schema {
   @type('number')
   id
@@ -29,7 +29,7 @@ export class Unit extends Schema {
   constructor(x: number, y: number) {
     super()
 
-    this.id = +new Date()
+    this.id = ++id
     this.gridX = x
     this.gridY = y
     this.destinationX = x

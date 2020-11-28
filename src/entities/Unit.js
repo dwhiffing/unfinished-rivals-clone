@@ -46,7 +46,11 @@ export class Unit {
   }
 
   move(hex) {
-    this.scene.room.send('Move', { x: hex.x, y: hex.y })
+    this.scene.room.send('Move', {
+      unitId: this.serverUnit.id,
+      x: hex.x,
+      y: hex.y,
+    })
     this.deselect()
   }
 }

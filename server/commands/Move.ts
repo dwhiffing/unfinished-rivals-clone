@@ -10,7 +10,10 @@ export class MoveCommand extends Command<
   }
 
   execute({ unitId, x, y }) {
-    this.state.units[0].destinationX = x
-    this.state.units[0].destinationY = y
+    const unit = this.state.units.find((u) => u.id === unitId)
+    if (!unit) return
+
+    unit.destinationX = x
+    unit.destinationY = y
   }
 }

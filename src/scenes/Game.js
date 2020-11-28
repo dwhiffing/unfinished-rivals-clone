@@ -25,12 +25,18 @@ export default class extends Phaser.Scene {
       const _state = state.toJSON()
       _state.units.forEach((unit) => {
         const localUnit = this.units.find((u) => u.serverUnit.id === unit.id)
-        if (!localUnit) {
-          this.units.push(new Unit(this, unit))
-        } else {
+        if (localUnit) {
           localUnit.serverUnit = unit
-          localUnit.tween(unit.x, unit.y)
+          if (unit.x !== localUnit.sprite.x || unit.y !== localUnit.sprite.y) {
+            localUnit.tween(unit.x, unit.y)
+          }
+        } else {
+          this.units.push(new Unit(this, unit))
         }
+      })
+      _state.grid.forEach((hex) => {
+        const localHex = this.rivals.hexGrid.get(hex)
+        localHex.hexObject.setIndex(hex.index)
       })
     })
   }
@@ -39,7 +45,7 @@ export default class extends Phaser.Scene {
     if (this.activeHex) return
     const hoveredHex = this.rivals.getHexFromScreenPos(pointer)
 
-    if (this.lastHoveredHex && !this.lastHoveredHex.active) {
+    if (this.lastHoveredHex) {
       this.lastHoveredHex.deselect()
     }
 
