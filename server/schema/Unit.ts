@@ -18,6 +18,9 @@ export class Unit extends Schema {
   gridY
 
   @type('number')
+  team
+
+  @type('number')
   destinationX
 
   @type('number')
@@ -26,7 +29,7 @@ export class Unit extends Schema {
   @type('number')
   speed
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, team: number) {
     super()
 
     this.id = ++id
@@ -34,6 +37,7 @@ export class Unit extends Schema {
     this.gridY = y
     this.destinationX = x
     this.destinationY = y
+    this.team = team
     this.speed = 20
     const screen = rivals.getScreenPosFromCoords(this.gridX, this.gridY)
     this.x = screen.x

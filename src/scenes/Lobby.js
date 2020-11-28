@@ -14,6 +14,15 @@ export default class extends Phaser.Scene {
       this.scene.start('Game', { room })
     }
 
+    this.createRoomFast = async (name) => {
+      const colyseus = window.colyseus
+      const room = await colyseus.create('rivals', {
+        roomName: 'asd',
+        name: 'name',
+      })
+      enterRoom(room, name)
+    }
+
     this.createRoom = async (name) => {
       const roomName = prompt('Room name?')
       if (!roomName) return
@@ -59,7 +68,13 @@ export default class extends Phaser.Scene {
       window.colyseus.getAvailableRooms().then(onFetchRooms)
     }, 3000)
 
-    new Button(this, width / 2, height - 200, this.createRoom, 'Create Game')
+    new Button(
+      this,
+      width / 2,
+      height - 200,
+      this.createRoomFast,
+      'Create Game',
+    )
   }
 }
 

@@ -18,11 +18,11 @@ export class RoomState extends Schema {
     super()
     rivals.createGrid()
     this.grid = this.grid.concat(rivals.hexGrid.map((h) => new Hex(h.x, h.y)))
-    this.units.push(new Unit(2, 1))
-    this.units.push(new Unit(2, 2))
-    this.units.push(new Unit(1, 3))
-    this.units.push(new Unit(8, 1))
-    this.units.push(new Unit(9, 2))
-    this.units.push(new Unit(9, 3))
+    this.units.push(new Unit(2, 1, 0))
+    this.units.push(new Unit(2, 2, 0))
+    this.units.push(new Unit(1, 3, 0))
+    this.units.push(new Unit(8, 1, 1))
+    this.units.push(new Unit(9, 2, 1))
+    this.units.push(new Unit(9, 3, 1))
   }
 }
