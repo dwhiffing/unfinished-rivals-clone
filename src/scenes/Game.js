@@ -15,6 +15,10 @@ export default class extends Phaser.Scene {
   create() {
     this.rivals = new Rivals(clientWidth, clientHeight)
     this.rivals.createGrid((hex) => new Hex(this, hex))
+    this.room.onLeave((code) => {
+      if (code === 1000) localStorage.removeItem(room.id)
+      this.scene.start('Lobby')
+    })
 
     this.input.on('pointermove', this.onMoveMouse.bind(this))
     this.input.on('pointerdown', this.onClickMouse.bind(this))
