@@ -1,12 +1,10 @@
-import * as constants from '../constants'
-import { getPath, getScreenPos } from '../utils'
+import * as constants from '../../lib/rivals'
+import { getScreenPos } from '../utils'
 
 export class Unit {
   constructor(scene, x, y) {
     this.scene = scene
-    this.gridX = x
-    this.gridY = y
-    const hex = this.scene.hexService.hexGrid.get({ x, y })
+    const hex = this.scene.rivals.hexGrid.get({ x, y })
     this.hex = hex
 
     const screen = getScreenPos(hex.toPoint())
@@ -26,11 +24,11 @@ export class Unit {
     this.sprite.setAlpha(0.5)
   }
 
-  tween(hex) {
+  tween(hex, path) {
     const timeline = this.scene.tweens.createTimeline({
       onComplete: () => (this.hex = hex),
     })
-    getPath(this.scene, this.hex, hex).forEach((hex) => {
+    path.forEach((hex) => {
       const { x, y } = getScreenPos(hex.toPoint())
       timeline.add({ targets: [this.sprite], x, y, duration: 200 })
     })

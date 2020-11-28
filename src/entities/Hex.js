@@ -1,4 +1,4 @@
-import * as constants from '../constants'
+import * as constants from '../../lib/rivals'
 import { getScreenPos } from '../utils'
 
 export class Hex {
@@ -9,8 +9,6 @@ export class Hex {
     this.sprite = this.scene.add
       .sprite(x, y, 'hexagon')
       .setScale(constants.SCALED_TILE_SIZE)
-    this.gridX = hex.x
-    this.gridY = hex.y
   }
 
   select() {

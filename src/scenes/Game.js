@@ -1,4 +1,4 @@
-import { HexService } from '../entities/HexService'
+import { Rivals } from '../../lib/rivals'
 import { Unit } from '../entities/Unit'
 
 export default class extends Phaser.Scene {
@@ -11,7 +11,8 @@ export default class extends Phaser.Scene {
   }
 
   create() {
-    this.hexService = new HexService(this)
+    this.rivals = new Rivals()
+    this.rivals.createGrid(this)
     this.input.on('pointermove', this.onMoveMouse.bind(this))
     this.input.on('pointerdown', this.onClickMouse.bind(this))
 
@@ -20,15 +21,16 @@ export default class extends Phaser.Scene {
       if (!this.node) {
         this.node = new Unit(this, _state.units[0].x, _state.units[0].y)
       } else {
-        const hex = this.hexService.hexGrid.get(_state.units[0])
-        this.node.tween(hex)
+        const hex = this.rivals.hexGrid.get(_state.units[0])
+        const path = this.rivals.getPath(this, this.node.hex, hex)
+        this.node.tween(hex, path)
       }
     })
   }
 
   onMoveMouse(pointer) {
     if (!this.activeHex) {
-      const hoveredHex = this.hexService.getHexFromScreenPos(pointer)
+      const hoveredHex = this.rivals.getHexFromScreenPos(pointer)
 
       if (this.lastHoveredHex && !this.lastHoveredHex.active) {
         this.lastHoveredHex.deselect()
@@ -42,7 +44,7 @@ export default class extends Phaser.Scene {
   }
 
   onClickMouse(pointer) {
-    const clickedHex = this.hexService.getHexFromScreenPos(pointer)
+    const clickedHex = this.rivals.getHexFromScreenPos(pointer)
     if (!clickedHex) return
 
     if (this.node.active) {
