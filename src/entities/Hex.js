@@ -4,10 +4,10 @@ import { getScreenPos } from '../utils'
 export class Hex {
   constructor(scene, hex) {
     this.scene = scene
-    const screen = getScreenPos(hex.toPoint())
+    const { x, y } = getScreenPos(hex.toPoint())
     this.hex = hex
     this.sprite = this.scene.add
-      .sprite(screen.x, screen.y, 'hexagon')
+      .sprite(x, y, 'hexagon')
       .setScale(constants.SCALED_TILE_SIZE)
     this.gridX = hex.x
     this.gridY = hex.y
@@ -24,8 +24,6 @@ export class Hex {
   }
 
   hover() {
-    if (!this.active) {
-      this.sprite.setFrame(1)
-    }
+    if (!this.active) this.sprite.setFrame(1)
   }
 }

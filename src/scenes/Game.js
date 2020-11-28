@@ -43,9 +43,7 @@ export default class extends Phaser.Scene {
 
   onClickMouse(pointer) {
     const clickedHex = this.hexService.getHexFromScreenPos(pointer)
-    if (!clickedHex) {
-      return
-    }
+    if (!clickedHex) return
 
     if (this.node.active) {
       this.node.move(clickedHex)
@@ -55,7 +53,6 @@ export default class extends Phaser.Scene {
 
     if (clickedHex === this.node.hex && !this.node.active) {
       this.node.select()
-      return
     }
   }
 
