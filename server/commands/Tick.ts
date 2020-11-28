@@ -1,14 +1,66 @@
 import { Command } from '@colyseus/command'
 import { RoomState } from '../schema'
 import { rivals } from '../../lib/rivals'
+
 export class TickCommand extends Command<RoomState> {
   validate() {
     return true
   }
 
   execute() {
+    if (this.state.phaseIndex === -1) return
+
     this.state.units.forEach(moveTowardDestination)
+    const padStatus = checkPads()
+    const leftCount = padStatus.filter((p) => p === 0).length
+    const rightCount = padStatus.filter((p) => p === 1).length
+    this.state.chargeIndex = -1
+    if (leftCount > 0 && rightCount > 0 && rightCount === leftCount) {
+      this.state.chargeIndex = 2
+    } else if (leftCount > rightCount) {
+      this.state.chargeIndex = 0
+      this.state.charge += 2
+    } else if (rightCount > leftCount) {
+      this.state.chargeIndex = 1
+      this.state.charge += 2
+    }
+
+    if (this.state.charge >= 100) {
+      this.state.phaseIndex = -1
+      // TODO: announce winner via broadcast
+      this.room.disconnect()
+    }
   }
+}
+
+const checkPads = () => {
+  if (!rivals.hexGrid) return []
+  const padHexes = rivals.hexGrid.filter((h) => h.index === 3)
+  let pads = []
+  padHexes.forEach((hex) => {
+    const neighbours = rivals.hexGrid.neighborsOf(hex)
+    const connectedPad = pads.find((pad) =>
+      pad.some((h) => neighbours.includes(h)),
+    )
+    if (connectedPad) {
+      connectedPad.push(hex)
+    } else {
+      pads.push([hex])
+    }
+  })
+
+  let padStatus = []
+  pads.forEach((pad) => {
+    let status = -1
+    let leftIsPresent = pad.some((h) => h.unit && h.unit.team === 0)
+    let rightIsPresent = pad.some((h) => h.unit && h.unit.team === 1)
+    if (leftIsPresent && rightIsPresent) status = 2
+    if (leftIsPresent) status = 0
+    if (rightIsPresent) status = 1
+    padStatus.push(status)
+  })
+
+  return padStatus
 }
 
 const moveTowardDestination = (unit) => {

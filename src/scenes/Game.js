@@ -16,20 +16,35 @@ export default class extends Phaser.Scene {
     this.rivals = new Rivals(clientWidth, clientHeight)
     this.rivals.createGrid((hex) => new Hex(this, hex))
     this.room.onLeave((code) => {
-      if (code === 1000) localStorage.removeItem(room.id)
+      if (code === 1000) localStorage.removeItem(this.room.id)
       this.scene.start('Lobby')
     })
+
+    this.chargeText = this.add
+      .text(this.cameras.main.width / 2, 40, '0', {
+        fontSize: 40,
+        align: 'center',
+      })
+      .setOrigin(0.5)
 
     this.input.on('pointermove', this.onMoveMouse.bind(this))
     this.input.on('pointerdown', this.onClickMouse.bind(this))
     this.units = []
     this.activeUnit = null
-
-    this.room.onStateChange((state) => {
+    const updateState = (state) => {
       const _state = state.toJSON()
+
+      this.chargeText.text = _state.charge
+      let tint = '#ffffff'
+      if (_state.chargeIndex === 0) tint = '#ff0000'
+      if (_state.chargeIndex === 1) tint = '#00ff00'
+      if (_state.chargeIndex === 2) tint = '#ffff00'
+      this.chargeText.style.color = tint
+
       if (!this.player && _state.players.length > 0) {
         this.player = _state.players.find((p) => p.id === this.room.sessionId)
       }
+
       _state.units.forEach((unit) => {
         const localUnit = this.units.find((u) => u.serverUnit.id === unit.id)
         if (localUnit) {
@@ -41,11 +56,14 @@ export default class extends Phaser.Scene {
           this.units.push(new Unit(this, unit))
         }
       })
+
       _state.grid.forEach((hex) => {
         const localHex = this.rivals.hexGrid.get(hex)
         localHex.hexObject.setIndex(hex.index)
       })
-    })
+    }
+    updateState(this.room.state)
+    this.room.onStateChange(updateState)
   }
 
   onMoveMouse(pointer) {
