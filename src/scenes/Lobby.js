@@ -9,7 +9,7 @@ export default class extends Phaser.Scene {
       localStorage.setItem('name', name)
       localStorage.setItem(room.id, room.sessionId)
       clearInterval(this.interval)
-      this.scene.start('Game')
+      this.scene.start('Game', { room })
     }
 
     this.createRoom = async (name) => {

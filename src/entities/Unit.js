@@ -26,16 +26,18 @@ export class Unit {
     this.sprite.setAlpha(0.5)
   }
 
-  move(hex) {
+  tween(hex) {
     const timeline = this.scene.tweens.createTimeline({
       onComplete: () => (this.hex = hex),
     })
-
     getPath(this.scene, this.hex, hex).forEach((hex) => {
       const { x, y } = getScreenPos(hex.toPoint())
       timeline.add({ targets: [this.sprite], x, y, duration: 200 })
     })
-
     timeline.play()
+  }
+
+  move(hex) {
+    this.scene.room.send('Move', { x: hex.x, y: hex.y })
   }
 }

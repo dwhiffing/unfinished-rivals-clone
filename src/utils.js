@@ -11,7 +11,6 @@ export const getScreenPos = (position) => {
 export const getPath = (scene, start, end) => {
   let candidates = [start]
   let path = []
-
   while (candidates.length > 0) {
     candidates = candidates.sort((a, b) => {
       const g1 = a.distance(start)

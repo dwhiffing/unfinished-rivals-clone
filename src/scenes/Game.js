@@ -6,12 +6,24 @@ export default class extends Phaser.Scene {
     super({ key: 'Game' })
   }
 
+  init(params) {
+    this.room = params.room
+  }
+
   create() {
     this.hexService = new HexService(this)
     this.input.on('pointermove', this.onMoveMouse.bind(this))
     this.input.on('pointerdown', this.onClickMouse.bind(this))
 
-    this.node = new Unit(this, 0, 0)
+    this.room.onStateChange((state) => {
+      const _state = state.toJSON()
+      if (!this.node) {
+        this.node = new Unit(this, _state.units[0].x, _state.units[0].y)
+      } else {
+        const hex = this.hexService.hexGrid.get(_state.units[0])
+        this.node.tween(hex)
+      }
+    })
   }
 
   onMoveMouse(pointer) {
