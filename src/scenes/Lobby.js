@@ -65,7 +65,7 @@ export default class extends Phaser.Scene {
     window.colyseus.getAvailableRooms().then(onFetchRooms)
     this.interval = setInterval(() => {
       window.colyseus.getAvailableRooms().then(onFetchRooms)
-    }, 3000)
+    }, 1000)
 
     new Button(
       this,
