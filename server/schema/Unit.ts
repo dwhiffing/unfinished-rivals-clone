@@ -21,18 +21,27 @@ export class Unit extends Schema {
   team
 
   @type('number')
-  speed = 20
+  damage
+
+  @type('number')
+  health
+
+  @type('number')
+  speed
 
   @type([Hex])
   path = new ArraySchema<Hex>()
 
-  constructor({ id, x, y, gridX, gridY, team }) {
+  constructor({ id, x, y, gridX, gridY, team, health, damage, speed }) {
     super()
 
     this.id = id
     this.gridX = gridX
     this.gridY = gridY
     this.team = team
+    this.health = health
+    this.damage = damage
+    this.speed = speed
     this.x = x
     this.y = y
   }

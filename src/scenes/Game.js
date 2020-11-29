@@ -33,7 +33,6 @@ export default class extends Phaser.Scene {
     if (state.phaseIndex === -1) return
 
     this.strategyGame.clientSyncState(state)
-    this.ui.update()
 
     if (!this.player)
       this.player = state.players.find((p) => p.id === this.room.sessionId)
@@ -43,6 +42,8 @@ export default class extends Phaser.Scene {
       if (unit) return unit.update(serverUnit)
       this.unitSprites.push(new Unit(this, serverUnit))
     })
+
+    this.ui.update()
   }
 
   onMoveMouse(pointer) {

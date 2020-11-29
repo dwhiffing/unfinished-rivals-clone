@@ -15,20 +15,27 @@ export class SyncCommand extends Command<RoomState> {
       )
     }
 
+    let shouldUpdatePads =
+      this.state.pads.length !== strat.pads.length ||
+      this.state.pads.some(
+        (pad, index) => strat.pads[index].status !== pad.status,
+      )
+
+    if (shouldUpdatePads) {
+      this.state.pads = new ArraySchema<Pad>(
+        ...strat.pads.map((ps) => new Pad(ps)),
+      )
+    }
+
     let shouldUpdateUnits =
       this.state.units.length !== strat.units.length ||
       this.state.units.some((unit) => {
         const u = strat.getUnit(unit.id)
-        return unit.x !== u.x || unit.y !== u.y
+        return unit.x !== u.x || unit.y !== u.y || unit.health !== u.health
       })
-
     if (shouldUpdateUnits) {
       this.state.units = new ArraySchema<Unit>(
         ...strat.units.map((u) => new Unit(u)),
-      )
-
-      this.state.pads = new ArraySchema<Pad>(
-        ...strat.pads.map((ps) => new Pad(ps)),
       )
     }
   }

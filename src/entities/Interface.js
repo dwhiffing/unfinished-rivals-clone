@@ -11,8 +11,8 @@ export class Interface {
   }
 
   update() {
-    this.chargeText.text = this.scene.strategyGame.charge
     this.chargeText.style.color =
       PAD_STATUS_COLORS[this.scene.strategyGame.chargeIndex + 1]
+    this.chargeText.text = this.scene.strategyGame.charge
   }
 }

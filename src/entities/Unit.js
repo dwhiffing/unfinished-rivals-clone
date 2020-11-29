@@ -1,23 +1,36 @@
 const duration = 200
 export class Unit {
-  constructor(scene, { gridX, gridY, id, team }) {
+  constructor(scene, { gridX, gridY, id, team, health = 100, damage = 10 }) {
     this.scene = scene
     this.strategyGame = scene.strategyGame
     this.id = id
     this.team = team
+    this.health = health
+    this.damage = damage
 
     this.hex = this.strategyGame.hexes.get({ x: gridX, y: gridY })
 
     const screen = this.strategyGame.getScreenPos(this.hex.toPoint())
+    this.healthText = this.scene.add.text(
+      screen.x,
+      screen.y,
+      this.health.toString(),
+    )
     this.sprite = this.scene.add
       .sprite(screen.x, screen.y, team === 0 ? 'node' : 'node2')
       .setScale(this.strategyGame.SCALED_TILE_SIZE)
       .setAlpha(0.5)
   }
 
-  update(unit) {
+  update({ x, y, health = 100 }) {
     this.hex = this.strategyGame.getHexFromScreenPos(this.sprite)
-    this.tween(unit.x, unit.y)
+    this.tween(x, y)
+    this.healthText.text = health.toString()
+    this.health = health
+    if (this.health <= 0) {
+      this.sprite.destroy()
+      this.healthText.destroy()
+    }
   }
 
   select() {
@@ -29,7 +42,7 @@ export class Unit {
   }
 
   tweenOpts(opts) {
-    return { targets: [this.sprite], duration, ...opts }
+    return { targets: [this.sprite, this.healthText], duration, ...opts }
   }
 
   tween(x, y) {
