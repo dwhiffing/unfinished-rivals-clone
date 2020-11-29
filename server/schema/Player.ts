@@ -18,8 +18,9 @@ export class Player extends Schema {
   @type('number')
   remainingConnectionTime = 0
 
-  constructor(id: string) {
+  constructor({ id, name }) {
     super()
     this.id = id
+    this.name = name
   }
 }

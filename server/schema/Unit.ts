@@ -1,10 +1,7 @@
 import { type, ArraySchema, Schema } from '@colyseus/schema'
-import { rivals } from '../../lib/rivals'
 import { Hex } from './Hex'
-let id = 0
-export class Unit extends Schema {
-  hex
 
+export class Unit extends Schema {
   @type('number')
   id
 
@@ -23,25 +20,20 @@ export class Unit extends Schema {
   @type('number')
   team
 
+  @type('number')
+  speed = 20
+
   @type([Hex])
   path = new ArraySchema<Hex>()
 
-  @type('number')
-  speed
-
-  constructor(x: number, y: number, team: number) {
+  constructor({ id, x, y, gridX, gridY, team }) {
     super()
 
-    this.id = ++id
-    this.gridX = x
-    this.gridY = y
+    this.id = id
+    this.gridX = gridX
+    this.gridY = gridY
     this.team = team
-    this.speed = 20
-    const screen = rivals.getScreenPosFromCoords(this.gridX, this.gridY)
-    this.x = screen.x
-    this.y = screen.y
-    const hex = rivals.hexGrid.get({ x, y })
-    this.hex = hex
-    hex.unit = this
+    this.x = x
+    this.y = y
   }
 }

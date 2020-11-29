@@ -13,7 +13,7 @@ app.use(express.json())
 const server = http.createServer(app)
 const gameServer = new Server({ server: server, express: app })
 
-gameServer.define('rivals', RivalsRoom)
+gameServer.define('strategyGame', RivalsRoom)
 gameServer.listen(port)
 
 app.use(express.static(__dirname + '/../dist'))

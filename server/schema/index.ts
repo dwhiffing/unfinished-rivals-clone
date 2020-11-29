@@ -1,2 +1,5 @@
 export { Player } from './Player'
-export { RoomState, PadStatus } from './RoomState'
+export { RoomState } from './RoomState'
+export { Pad } from './Pad'
+export { Unit } from './Unit'
+export { Hex } from './Hex'

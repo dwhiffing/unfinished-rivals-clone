@@ -3,6 +3,8 @@ import { RoomState } from '../schema'
 import { Dispatcher } from '@colyseus/command'
 import * as Commands from '../commands'
 
+const TICK_RATE = 200
+
 export class RivalsRoom extends Room<RoomState> {
   maxClients = 2
   dispatcher = new Dispatcher(this)
@@ -29,11 +31,11 @@ export class RivalsRoom extends Room<RoomState> {
       } catch (e) {
         console.error(e)
       }
-    }, 200)
+    }, TICK_RATE)
   }
 
   onAuth() {
-    if (this.state.players.length >= 10)
+    if (this.state.players.length >= 2)
       throw new ServerError(400, 'Too many players')
 
     return true

@@ -1,56 +1,54 @@
+const duration = 200
 export class Unit {
-  constructor(scene, serverUnit) {
+  constructor(scene, { gridX, gridY, id, team }) {
     this.scene = scene
-    this.serverUnit = serverUnit
-    const hex = this.scene.rivals.hexGrid.get({
-      x: serverUnit.gridX,
-      y: serverUnit.gridY,
-    })
-    this.hex = hex
+    this.strategyGame = scene.strategyGame
+    this.id = id
+    this.team = team
 
-    const screen = scene.rivals.getScreenPos(hex.toPoint())
+    this.hex = this.strategyGame.hexes.get({ x: gridX, y: gridY })
+
+    const screen = this.strategyGame.getScreenPos(this.hex.toPoint())
     this.sprite = this.scene.add
-      .sprite(screen.x, screen.y, serverUnit.team === 0 ? 'node' : 'node2')
-      .setScale(scene.rivals.SCALED_TILE_SIZE)
+      .sprite(screen.x, screen.y, team === 0 ? 'node' : 'node2')
+      .setScale(this.strategyGame.SCALED_TILE_SIZE)
       .setAlpha(0.5)
   }
 
+  update(unit) {
+    this.hex = this.strategyGame.getHexFromScreenPos(this.sprite)
+    this.tween(unit.x, unit.y)
+  }
+
   select() {
-    this.active = true
     this.sprite.setAlpha(1)
   }
 
   deselect() {
-    this.active = false
     this.sprite.setAlpha(0.5)
   }
 
+  tweenOpts(opts) {
+    return { targets: [this.sprite], duration, ...opts }
+  }
+
   tween(x, y) {
-    this.scene.tweens.add({
-      targets: [this.sprite],
-      x,
-      y,
-      duration: 200,
-    })
+    this.scene.tweens.add(this.tweenOpts({ x, y }))
   }
 
   tweenPath(hex, path) {
-    const timeline = this.scene.tweens.createTimeline({
-      onComplete: () => (this.hex = hex),
-    })
+    const onComplete = () => (this.hex = hex)
+    const timeline = this.scene.tweens.createTimeline({ onComplete })
     path.forEach((hex) => {
-      const { x, y } = this.scene.rivals.getScreenPos(hex.toPoint())
-      timeline.add({ targets: [this.sprite], x, y, duration: 200 })
+      const opts = this.tweenOpts(this.strategyGame.getScreenPos(hex.toPoint()))
+      timeline.add(opts)
     })
     timeline.play()
   }
 
-  move(hex) {
-    this.scene.room.send('Move', {
-      unitId: this.serverUnit.id,
-      x: hex.x,
-      y: hex.y,
-    })
+  move({ x, y }) {
+    const unitId = this.id
+    this.scene.room.send('Move', { unitId, x, y })
     this.deselect()
   }
 }

@@ -1,5 +1,4 @@
 import { Button } from '../entities/Button'
-
 const { clientWidth: width, clientHeight: height } = document.documentElement
 export default class extends Phaser.Scene {
   constructor() {
@@ -16,7 +15,7 @@ export default class extends Phaser.Scene {
 
     this.createRoomFast = async (name) => {
       const colyseus = window.colyseus
-      const room = await colyseus.create('rivals', {
+      const room = await colyseus.create('strategyGame', {
         roomName: 'asd',
         name: 'name',
       })
@@ -28,7 +27,7 @@ export default class extends Phaser.Scene {
       if (!roomName) return
 
       const colyseus = window.colyseus
-      const room = await colyseus.create('rivals', { roomName, name })
+      const room = await colyseus.create('strategyGame', { roomName, name })
       enterRoom(room, name)
     }
 
