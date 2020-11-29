@@ -16,7 +16,7 @@ export default class extends Phaser.Scene {
 
   create() {
     this.strategyGame = new StrategyGame(width, height)
-    this.strategyGame.createGrid(this, Hex)
+    this.strategyGame.createGrid((hex) => new Hex(this, hex))
     this.unitSprites = []
     this.activeUnit = null
     this.ui = new Interface(this)
@@ -47,16 +47,16 @@ export default class extends Phaser.Scene {
   }
 
   onMoveMouse(pointer) {
-    const hoveredHex = this.strategyGame.getHexFromScreenPos(pointer)
+    const hoveredHex = this.strategyGame.getHexFromScreen(pointer)
     if (this.activeHex || !hoveredHex) return
 
     if (this.lastHoveredHex) this.lastHoveredHex.deselect()
-    this.lastHoveredHex = hoveredHex.sprite
+    this.lastHoveredHex = hoveredHex.object
     this.lastHoveredHex.hover()
   }
 
   onClickMouse(pointer) {
-    const hex = this.strategyGame.getHexFromScreenPos(pointer)
+    const hex = this.strategyGame.getHexFromScreen(pointer)
     const unit = this.unitSprites.find((u) => u.hex === hex)
     if (this.activeUnit && hex) {
       this.activeUnit.move(hex)

@@ -1,4 +1,5 @@
 const duration = 200
+
 export class Unit {
   constructor(scene, { gridX, gridY, id, team, health = 100, damage = 10 }) {
     this.scene = scene
@@ -10,7 +11,7 @@ export class Unit {
 
     this.hex = this.strategyGame.hexes.get({ x: gridX, y: gridY })
 
-    const screen = this.strategyGame.getScreenPos(this.hex.toPoint())
+    const screen = this.strategyGame.getScreenFromHex(this.hex)
     this.healthText = this.scene.add.text(
       screen.x,
       screen.y,
@@ -18,12 +19,12 @@ export class Unit {
     )
     this.sprite = this.scene.add
       .sprite(screen.x, screen.y, team === 0 ? 'node' : 'node2')
-      .setScale(this.strategyGame.SCALED_TILE_SIZE)
+      .setScale(this.strategyGame.SCALED_SIZE)
       .setAlpha(0.5)
   }
 
   update({ x, y, health = 100 }) {
-    this.hex = this.strategyGame.getHexFromScreenPos(this.sprite)
+    this.hex = this.strategyGame.getHexFromScreen(this.sprite)
     this.tween(x, y)
     this.healthText.text = health.toString()
     this.health = health
@@ -45,7 +46,14 @@ export class Unit {
     return { targets: [this.sprite, this.healthText], duration, ...opts }
   }
 
-  tween(x, y) {
+  tween(_x, _y) {
+    const height = document.documentElement.clientHeight
+    const x = _x * this.scene.strategyGame.SCALE
+    const y =
+      _y * this.scene.strategyGame.SCALE +
+      (height -
+        this.scene.strategyGame.NATIVE_HEIGHT * this.scene.strategyGame.SCALE) /
+        2
     this.scene.tweens.add(this.tweenOpts({ x, y }))
   }
 
@@ -53,7 +61,7 @@ export class Unit {
     const onComplete = () => (this.hex = hex)
     const timeline = this.scene.tweens.createTimeline({ onComplete })
     path.forEach((hex) => {
-      const opts = this.tweenOpts(this.strategyGame.getScreenPos(hex.toPoint()))
+      const opts = this.tweenOpts(this.strategyGame.getScreenFromHex(hex))
       timeline.add(opts)
     })
     timeline.play()

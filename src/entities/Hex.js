@@ -1,12 +1,12 @@
 export class Hex {
   constructor(scene, hex) {
     this.scene = scene
-    const { x, y } = scene.strategyGame.getScreenPos(hex.toPoint())
+    const { x, y } = scene.strategyGame.getScreenFromHex(hex)
     this.hex = hex
     this.index = 0
     this.sprite = this.scene.add
       .sprite(x, y, 'hexagon')
-      .setScale(scene.strategyGame.SCALED_TILE_SIZE)
+      .setScale(scene.strategyGame.SCALED_SIZE)
   }
 
   setIndex(i) {
