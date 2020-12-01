@@ -7,6 +7,9 @@ export class Hex {
     this.sprite = this.scene.add
       .sprite(x, y, 'hexagon')
       .setScale(scene.strategyGame.SCALED_SIZE)
+    this.scene.add.text(x - 20, y - 20, hex.x.toString() + ',' + hex.y, {
+      fontSize: 10,
+    })
   }
 
   setIndex(i) {
