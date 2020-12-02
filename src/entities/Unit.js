@@ -8,6 +8,9 @@ export class Unit {
     this.team = team
     this.health = health
     this.damage = damage
+    this.gridX = gridX
+    this.gridY = gridY
+    this.path = []
 
     this.hex = this.strategyGame.hexes.get({ x: gridX, y: gridY })
 
@@ -21,24 +24,33 @@ export class Unit {
       .sprite(screen.x, screen.y, team === 0 ? 'node' : 'node2')
       .setScale(this.strategyGame.SCALED_SIZE)
       .setAlpha(0.5)
+    // .setInteractive()
+    // this.sprite.on('pointerdown', this.select)
+    this.active = true
   }
 
-  update({ x, y, health = 100 }) {
+  update({ x, y, gridX, gridY, path, health = 100 }) {
     this.hex = this.strategyGame.getHexFromScreen(this.sprite)
     this.tween(x, y)
+    this.gridX = gridX
+    this.gridY = gridY
+    this.path = path
     this.healthText.text = health.toString()
     this.health = health
     if (this.health <= 0) {
       this.sprite.destroy()
+      this.active = false
       this.healthText.destroy()
     }
   }
 
   select() {
+    if (!this.active) return
     this.sprite.setAlpha(1)
   }
 
   deselect() {
+    if (!this.active) return
     this.sprite.setAlpha(0.5)
   }
 
@@ -68,8 +80,9 @@ export class Unit {
   }
 
   move({ x, y }) {
+    if (!this.active) return
     const unitId = this.id
     this.scene.room.send('Move', { unitId, x, y })
-    this.deselect()
+    // this.deselect()
   }
 }

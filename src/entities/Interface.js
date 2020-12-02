@@ -15,25 +15,14 @@ export class Interface {
     this.chargeText.style.color =
       PAD_STATUS_COLORS[this.scene.strategyGame.chargeIndex + 1]
     this.chargeText.text = this.scene.strategyGame.charge
-  }
 
-  clear() {
-    this.lineGraphics.clear()
-    this.scene.strategyGame.hexes.forEach(
-      (h) => h.object && h.object.deselect(),
-    )
-  }
-
-  hover() {
     this.clear()
     const { activeUnit, lastHoveredHex, strategyGame } = this.scene
     if (!activeUnit || !lastHoveredHex) return
-    if (lastHoveredHex.hex.unit || lastHoveredHex.hex.index === 1) return
-    const start = strategyGame.getScreenFromHex(activeUnit.hex)
 
     this.lineGraphics.lineStyle(5, 0xffffff, 1.0)
     this.lineGraphics.beginPath()
-    this.lineGraphics.moveTo(start.x, start.y)
+    this.lineGraphics.moveTo(activeUnit.sprite.x, activeUnit.sprite.y)
     if (this._lastHovered !== lastHoveredHex || !this.path) {
       this.path = strategyGame.getPath(
         activeUnit,
@@ -41,6 +30,7 @@ export class Interface {
         lastHoveredHex.hex,
       )
     }
+    if (this.path.length === 0) return
 
     this.path.forEach((hex, i) => {
       const coord = strategyGame.getScreenFromHex(hex)
@@ -49,5 +39,9 @@ export class Interface {
     this.lineGraphics.strokePath()
     this.lineGraphics.closePath()
     this._lastHovered = lastHoveredHex
+  }
+
+  clear() {
+    this.lineGraphics.clear()
   }
 }

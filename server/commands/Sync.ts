@@ -30,8 +30,13 @@ export class SyncCommand extends Command<RoomState> {
     let shouldUpdateUnits =
       this.state.units.length !== strat.units.length ||
       this.state.units.some((unit) => {
-        const u = strat.getUnit(unit.id)
-        return unit.x !== u.x || unit.y !== u.y || unit.health !== u.health
+        const u = strat.units.find((u) => u.id === unit.id)
+        return (
+          unit.x !== u.x ||
+          unit.y !== u.y ||
+          unit.health !== u.health ||
+          unit.path.length !== u.path.length
+        )
       })
     if (shouldUpdateUnits) {
       this.state.units = new ArraySchema<Unit>(

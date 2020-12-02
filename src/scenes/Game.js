@@ -27,6 +27,10 @@ export default class extends Phaser.Scene {
     this.room.onStateChange(this.updateState)
   }
 
+  update() {
+    this.ui.update()
+  }
+
   updateState = (serverState) => {
     const state = serverState.toJSON()
 
@@ -42,12 +46,9 @@ export default class extends Phaser.Scene {
       if (unit) return unit.update(serverUnit)
       this.unitSprites.push(new Unit(this, serverUnit))
     })
-
-    this.ui.update()
   }
 
   onMoveMouse(pointer) {
-    this.ui.hover()
     const hoveredHex = this.strategyGame.getHexFromScreen(pointer)
     if (this.activeHex || !hoveredHex) return
 
@@ -59,11 +60,20 @@ export default class extends Phaser.Scene {
   onClickMouse(pointer) {
     this.ui.clear()
     const hex = this.strategyGame.getHexFromScreen(pointer)
-    const unit = this.unitSprites.find((u) => u.hex === hex)
-    if (this.activeUnit && hex) {
+    const unit = this.unitSprites.find(
+      (u) => u.gridX === hex.x && u.gridY === hex.y,
+    )
+    if (
+      this.activeUnit &&
+      this.activeUnit.active &&
+      hex &&
+      !this.strategyGame.isOccupied(hex, this.activeUnit)
+    ) {
       this.activeUnit.move(hex)
-      this.activeUnit = null
-    } else if (unit && unit.team === this.player.team) {
+      return
+    }
+    if (unit && unit.team === this.player.team && unit.active) {
+      this.activeUnit && this.activeUnit.deselect()
       this.activeUnit = unit
       unit.select()
     }
