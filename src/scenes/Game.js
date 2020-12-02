@@ -46,6 +46,11 @@ export default class extends Phaser.Scene {
       if (unit) return unit.update(serverUnit)
       this.unitSprites.push(new Unit(this, serverUnit))
     })
+    this.unitSprites.forEach((u) => {
+      if (!state.units.some((su) => su.id === u.id)) {
+        u.destroy()
+      }
+    })
   }
 
   onMoveMouse(pointer) {

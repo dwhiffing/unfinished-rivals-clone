@@ -38,10 +38,15 @@ export class Unit {
     this.healthText.text = health.toString()
     this.health = health
     if (this.health <= 0) {
-      this.sprite.destroy()
-      this.active = false
-      this.healthText.destroy()
+      this.destroy()
     }
+  }
+
+  destroy() {
+    this.sprite.destroy()
+    this.active = false
+    if (this.scene.activeUnit === this) this.scene.activeUnit = null
+    this.healthText.destroy()
   }
 
   select() {
