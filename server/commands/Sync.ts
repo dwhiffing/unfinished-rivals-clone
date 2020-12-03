@@ -11,7 +11,7 @@ export class SyncCommand extends Command<RoomState> {
 
     if (!this.state.hexes) {
       this.state.hexes = new ArraySchema<Hex>(
-        ...this.state.strategyGame.hexes.map((h) => new Hex(h)),
+        ...this.state.strategyGame.hexes.hexGrid.map((h) => new Hex(h)),
       )
     }
 

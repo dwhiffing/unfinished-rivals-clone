@@ -16,7 +16,7 @@ export default class extends Phaser.Scene {
 
   create() {
     this.strategyGame = new StrategyGame(width, height)
-    this.strategyGame.createGrid((hex) => new Hex(this, hex))
+    this.strategyGame.init((hex) => new Hex(this, hex))
     this.unitSprites = []
     this.activeUnit = null
     this.input.on('pointermove', this.onMoveMouse.bind(this))

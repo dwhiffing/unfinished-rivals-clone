@@ -32,6 +32,6 @@ export class RoomState extends Schema {
   constructor() {
     super()
     this.strategyGame = new StrategyGame()
-    this.strategyGame.createGrid()
+    this.strategyGame.init()
   }
 }

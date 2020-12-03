@@ -29,7 +29,7 @@ export class RivalsRoom extends Room<RoomState> {
         const command = new Commands.TickCommand()
         command && this.dispatcher.dispatch(command)
       } catch (e) {
-        // console.error(e)
+        console.error(e)
       }
     }, TICK_RATE)
   }
@@ -48,6 +48,10 @@ export class RivalsRoom extends Room<RoomState> {
       ...options,
     })
     this.broadcast('message', options.name + ' joined')
+  }
+
+  onDispose() {
+    this.clock.clear()
   }
 
   onLeave = async (client, consented) => {
