@@ -29,7 +29,7 @@ export class RivalsRoom extends Room<RoomState> {
         const command = new Commands.TickCommand()
         command && this.dispatcher.dispatch(command)
       } catch (e) {
-        console.error(e)
+        // console.error(e)
       }
     }, TICK_RATE)
   }

@@ -29,6 +29,7 @@ export class Interface {
         activeUnit.hex,
         lastHoveredHex.hex,
       )
+      this._lastHovered = lastHoveredHex
     }
     if (this.path.length === 0) return
 
@@ -38,7 +39,6 @@ export class Interface {
     })
     this.lineGraphics.strokePath()
     this.lineGraphics.closePath()
-    this._lastHovered = lastHoveredHex
   }
 
   clear() {
