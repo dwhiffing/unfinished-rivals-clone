@@ -3,7 +3,6 @@ import { Hex } from '../entities/Hex'
 import { Unit } from '../entities/Unit'
 import { Interface } from '../entities/Interface'
 
-const { clientWidth: width, clientHeight: height } = document.documentElement
 export default class extends Phaser.Scene {
   constructor() {
     super({ key: 'Game' })
@@ -15,7 +14,7 @@ export default class extends Phaser.Scene {
   }
 
   create() {
-    this.strategyGame = new StrategyGame(width, height)
+    this.strategyGame = new StrategyGame()
     this.strategyGame.init((hex) => new Hex(this, hex))
     this.unitSprites = []
     this.activeUnit = null

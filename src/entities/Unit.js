@@ -1,3 +1,5 @@
+import { NATIVE_HEIGHT } from '../../lib/constants'
+
 const duration = 200
 
 export class Unit {
@@ -79,7 +81,7 @@ export class Unit {
   }
 
   tween(_x, _y) {
-    const height = document.documentElement.clientHeight
+    const height = NATIVE_HEIGHT
     const x = _x * this.scene.strategyGame.SCALE
     const y =
       _y * this.scene.strategyGame.SCALE +

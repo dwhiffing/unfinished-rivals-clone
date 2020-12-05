@@ -1,5 +1,5 @@
+import { NATIVE_HEIGHT, NATIVE_WIDTH } from '../../lib/constants'
 import { Button } from '../entities/Button'
-const { clientWidth: width, clientHeight: height } = document.documentElement
 export default class extends Phaser.Scene {
   constructor() {
     super({ key: 'Lobby' })
@@ -49,8 +49,8 @@ export default class extends Phaser.Scene {
         roomButtons.push(
           new Button(
             this,
-            width / 2,
-            height - 400 - 100 * i,
+            NATIVE_WIDTH / 2,
+            NATIVE_HEIGHT - 400 - 100 * i,
             () => this.joinRoom(room.roomId, 'name'),
             room.metadata.roomName || room.roomId,
           ),
@@ -69,8 +69,8 @@ export default class extends Phaser.Scene {
 
     new Button(
       this,
-      width / 2,
-      height - 200,
+      NATIVE_WIDTH / 2,
+      NATIVE_HEIGHT - 200,
       this.createRoomFast,
       'Create Game',
     )
