@@ -1,5 +1,6 @@
+const PAD_STATUS_COLORS = ['#ffffff', '#ef4a3c', '#2754fa', '#e5dc12']
+
 const textOpts = { fontSize: 40, align: 'center' }
-const PAD_STATUS_COLORS = ['#ffffff', '#ff0000', '#00ff00', '#ffff00']
 
 export class Interface {
   constructor(scene) {
@@ -22,7 +23,7 @@ export class Interface {
 
     this.lineGraphics.lineStyle(5, 0xffffff, 1.0)
     this.lineGraphics.beginPath()
-    this.lineGraphics.moveTo(activeUnit.sprite.x, activeUnit.sprite.y)
+    this.lineGraphics.moveTo(activeUnit.container.x, activeUnit.container.y)
     if (this._lastHovered !== lastHoveredHex || !this.path) {
       this.path = strategyGame.getPath(
         activeUnit,
