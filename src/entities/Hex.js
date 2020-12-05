@@ -15,14 +15,7 @@ export class Hex {
         scene.strategyGame.SCALED_SIZE * modifier,
       )
 
-    // this.sprite.topLeftX -= 10
-    // this.sprite.topLeftY -= 10
-    // this.sprite.topRightX += 10
-    // this.sprite.topRightY += 10
-    // this.sprite.bottomLeftX -= 20
-    // this.sprite.bottomLeftY -= 20
-    // this.sprite.bottomRightX += 20
-    // this.sprite.bottomRightY += 20
+    this.alphaQuad(this.sprite, 0)
 
     this.padBorder = this.scene.add
       .quad(x, offset + y * modifier, 'hexagon')
@@ -65,9 +58,12 @@ export class Hex {
   }
 
   setIndex(i = this.index) {
+    if (this._hasSetIndex) return
+    this._hasSetIndex = true
     this.index = i
     this.sprite.resetColors()
 
+    this.alphaQuad(this.sprite, 1)
     this.tintQuad(this.sprite, this.greenTint)
 
     if (i === 1) {
@@ -119,7 +115,7 @@ export class Hex {
   }
 
   select() {
-    this.alphaQuad(this.highlight, 0.8)
+    this.alphaQuad(this.highlight, 0.5)
     // if (this.index !== 1) this.sprite.setFrame(1)
   }
 
@@ -133,4 +129,4 @@ export class Hex {
   }
 }
 
-const PAD_STATUS_COLORS = [0xcccccc, 0xef4a3c, 0x2754fa, 0xe5dc12]
+const PAD_STATUS_COLORS = [0xcccccc, 0x2754fa, 0xef4a3c, 0xe5dc12]
