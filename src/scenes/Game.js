@@ -68,6 +68,7 @@ export default class extends Phaser.Scene {
     this.ui.clear()
     if (this.strategyGame.phaseIndex === -1) return
     const hex = this.strategyGame.getHexFromScreen(pointer)
+    if (!hex) return
     const unit = this.unitSprites.find(
       (u) => u.gridX === hex.x && u.gridY === hex.y,
     )
