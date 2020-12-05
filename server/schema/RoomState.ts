@@ -18,6 +18,9 @@ export class RoomState extends Schema {
   chargeIndex = -1
 
   @type('number')
+  counter = -1
+
+  @type('number')
   charge = 0
 
   @type([Pad])

@@ -1,6 +1,6 @@
 import { ArraySchema } from '@colyseus/schema'
 import { Command } from '@colyseus/command'
-import { Hex, Pad, RoomState, Unit } from '../schema'
+import { Hex, Pad, Player, RoomState, Unit } from '../schema'
 
 export class SyncCommand extends Command<RoomState> {
   execute() {
@@ -12,6 +12,16 @@ export class SyncCommand extends Command<RoomState> {
     if (!this.state.hexes) {
       this.state.hexes = new ArraySchema<Hex>(
         ...this.state.strategyGame.hexes.hexGrid.map((h) => new Hex(h)),
+      )
+    }
+
+    if (
+      this.state.players.some(
+        (player, index) => strat.players[index].health !== player.health,
+      )
+    ) {
+      this.state.players = new ArraySchema<Player>(
+        ...strat.players.map((player) => new Player(player)),
       )
     }
 

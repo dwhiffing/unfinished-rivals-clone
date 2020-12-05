@@ -10,17 +10,31 @@ export class Player extends Schema {
   name = ''
 
   @type('number')
-  team = -1
-
-  @type('boolean')
-  connected = true
+  team
 
   @type('number')
-  remainingConnectionTime = 0
+  health
 
-  constructor({ id, name }) {
+  @type('boolean')
+  connected
+
+  @type('number')
+  remainingConnectionTime
+
+  constructor({
+    id,
+    name,
+    health = 100,
+    team = -1,
+    connected = true,
+    remainingConnectionTime = 0,
+  }) {
     super()
     this.id = id
     this.name = name
+    this.health = health
+    this.team = team
+    this.connected = connected
+    this.remainingConnectionTime = remainingConnectionTime
   }
 }

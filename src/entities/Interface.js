@@ -16,8 +16,19 @@ export class Interface {
       .setOrigin(0.5)
   }
 
+  end() {
+    this.ended = true
+    this.connectionText.setAlpha(1)
+    const winningPlayer = this.scene.strategyGame.players.find(
+      (p) => p.health !== 0,
+    )
+    this.connectionText.text =
+      winningPlayer.team === 0 ? 'Red player has won!' : 'Blue player has won!'
+    this.connectionText.setDepth(10)
+  }
+
   start() {
-    this.connectionText.destroy()
+    this.connectionText.setAlpha(0)
     this.started = true
     this.redHealthText = this.scene.add
       .text(150, 40, '100', { ...textOpts, color: PAD_STATUS_COLORS[1] })
@@ -38,6 +49,8 @@ export class Interface {
 
   update() {
     if (!this.started) return
+
+    if (this.scene.strategyGame.phaseIndex === 1 && !this.ended) this.end()
 
     this.chargeText.style.color =
       PAD_STATUS_COLORS[this.scene.strategyGame.chargeIndex + 1]

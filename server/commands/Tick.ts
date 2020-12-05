@@ -6,8 +6,14 @@ export class TickCommand extends Command<RoomState> {
   execute() {
     if (this.state.phaseIndex === -1) return
     if (this.state.phaseIndex === 1) {
-      this.state.phaseIndex = 2
-      this.room.disconnect()
+      if (this.state.counter === -1) this.state.counter = 20
+      this.state.counter -= 1
+
+      if (this.state.counter < 1) {
+        this.state.phaseIndex = 2
+        this.room.disconnect()
+      }
+
       return []
     }
     if (this.state.phaseIndex === 0) this.state.strategyGame.tick()
