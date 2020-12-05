@@ -1,3 +1,5 @@
+import { Button } from './Button'
+
 const PAD_STATUS_COLORS = ['#ffffff', '#ef4a3c', '#2754fa', '#e5dc12']
 
 const textOpts = { fontSize: 40, align: 'center' }
@@ -45,6 +47,14 @@ export class Interface {
       .text(this.scene.cameras.main.width / 2, 40, '0', textOpts)
       .setOrigin(0.5)
     this.lineGraphics = this.scene.add.graphics()
+
+    this.spawnButton = new Button(
+      this.scene,
+      this.scene.cameras.main.width / 2,
+      this.scene.cameras.main.height - 50,
+      () => this.scene.room.send('Spawn'),
+      'Spawn',
+    )
   }
 
   update() {
