@@ -34,6 +34,7 @@ export class SyncCommand extends Command<RoomState> {
         return (
           unit.x !== u.x ||
           unit.y !== u.y ||
+          unit.destination !== u.destination ||
           unit.health !== u.health ||
           unit.path.length !== u.path.length
         )

@@ -38,10 +38,10 @@ export class Unit {
     this.active = true
   }
 
-  update({ x, y, gridX, gridY, path, health = 100 }) {
+  update({ x, y, gridX, gridY, path, health = 100, ...rest }) {
     this.hex = this.strategyGame.getHexFromScreen(this.container)
     this.tween(x, y)
-    if (this.lastX > (this.team === 0 ? x : -x)) {
+    if (this.lastX > x || (this.lastX === x && this.team === 1)) {
       Object.values(this.sprites).forEach((s) =>
         s.setScale(-this.scale, this.scale),
       )
@@ -70,10 +70,12 @@ export class Unit {
 
   select() {
     if (!this.active) return
+    Object.values(this.sprites).forEach((s) => s.setAlpha(1))
   }
 
   deselect() {
     if (!this.active) return
+    Object.values(this.sprites).forEach((s) => s.setAlpha(0.5))
   }
 
   tween(_x, _y) {
