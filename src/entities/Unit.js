@@ -23,7 +23,7 @@ export class Unit {
     this.scale = this.strategyGame.SCALED_SIZE
     this.sprite = this.scene.add
       .sprite(screen.x, screen.y, 'units')
-      .setFrame(team === 0 ? 0 : 1)
+      .setFrame(team === 0 ? 1 : 0)
       .setScale(this.scale)
       .setAlpha(0.5)
       .setOrigin(0.5, 0.5)
