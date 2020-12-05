@@ -7,7 +7,7 @@ export class Hex extends Schema {
   @type('number')
   y
 
-  @type('number') // 0: empty, 1: wall, 2: resources, 3: pad
+  @type('number') // 0: empty, 1: wall, 2: resources, 3: pad, 4: base
   index = 0
 
   constructor({ x, y, index = 0 }) {

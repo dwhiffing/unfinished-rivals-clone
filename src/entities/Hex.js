@@ -34,9 +34,11 @@ export class Hex {
       )
       .setFrame(1)
     this.alphaQuad(this.highlight, 0)
-    // this.scene.add.text(x - 20, y - 20, hex.x.toString() + ',' + hex.y, {
-    //   fontSize: 10,
-    // })
+    // this.scene.add
+    //   .text(x, y, hex.x.toString() + ',' + hex.y, {
+    //     fontSize: 15,
+    //   })
+    //   .setOrigin(0.5)
     this.greyTint = Phaser.Math.RND.pick([
       0x75786b,
       0x888876,
@@ -93,6 +95,14 @@ export class Hex {
       this.alphaQuad(this.padBorder, 1)
       this.padBorder.setAngle(angle)
       this.tintQuad(this.sprite, 0x7f8674)
+    }
+    if (i === 4) {
+      this.sprite.setFrame(4)
+      if (this.sprite.x > this.scene.cameras.main.width / 2) {
+        this.tintQuad(this.sprite, PAD_STATUS_COLORS[2])
+      } else {
+        this.tintQuad(this.sprite, PAD_STATUS_COLORS[1])
+      }
     }
   }
 
