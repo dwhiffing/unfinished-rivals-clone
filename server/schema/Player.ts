@@ -15,6 +15,9 @@ export class Player extends Schema {
   @type('number')
   health
 
+  @type('number')
+  money
+
   @type('boolean')
   connected
 
@@ -24,6 +27,7 @@ export class Player extends Schema {
   constructor({
     id,
     name,
+    money = 0,
     health = 100,
     team = -1,
     connected = true,
@@ -34,6 +38,7 @@ export class Player extends Schema {
     this.name = name
     this.health = health
     this.team = team
+    this.money = money
     this.connected = connected
     this.remainingConnectionTime = remainingConnectionTime
   }

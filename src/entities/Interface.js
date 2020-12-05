@@ -36,6 +36,12 @@ export class Interface {
       .text(150, 40, '100', { ...textOpts, color: PAD_STATUS_COLORS[1] })
       .setOrigin(0.5)
 
+    this.moneyText = this.scene.add
+      .text(150, this.scene.cameras.main.height - 50, '0', {
+        ...textOpts,
+      })
+      .setOrigin(0.5)
+
     this.blueHealthText = this.scene.add
       .text(this.scene.cameras.main.width - 150, 40, '100', {
         ...textOpts,
@@ -68,6 +74,8 @@ export class Interface {
     const players = this.scene.strategyGame.players || []
     this.redHealthText.text = players[0] ? players[0].health.toString() : '0'
     this.blueHealthText.text = players[1] ? players[1].health.toString() : '0'
+    const activePlayer = players.find((p) => p.id === this.scene.player.id)
+    this.moneyText.text = activePlayer ? activePlayer.money : '0'
 
     this.clear()
     const { activeUnit, lastHoveredHex, strategyGame } = this.scene

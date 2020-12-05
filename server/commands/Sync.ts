@@ -16,9 +16,10 @@ export class SyncCommand extends Command<RoomState> {
     }
 
     if (
-      this.state.players.some(
-        (player, index) => strat.players[index].health !== player.health,
-      )
+      this.state.players.some((player, index) => {
+        const other = strat.players[index]
+        return other.health !== player.health || other.money !== player.money
+      })
     ) {
       this.state.players = new ArraySchema<Player>(
         ...strat.players.map((player) => new Player(player)),
