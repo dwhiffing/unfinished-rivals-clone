@@ -12,8 +12,10 @@ export default class extends Phaser.Scene {
       progress.fillRect(0, 0, width * value, height)
     })
 
-    this.load.image('node', 'assets/images/hexp.png')
-    this.load.image('node2', 'assets/images/hexg.png')
+    this.load.spritesheet('units', 'assets/images/units.png', {
+      frameWidth: 250,
+      frameHeight: 250,
+    })
     this.load.spritesheet('hexagon', 'assets/images/hex.png', {
       frameWidth: 392,
       frameHeight: 452,

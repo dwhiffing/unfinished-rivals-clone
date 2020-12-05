@@ -20,10 +20,13 @@ export class Unit {
       screen.y,
       this.health.toString(),
     )
+    this.scale = this.strategyGame.SCALED_SIZE
     this.sprite = this.scene.add
-      .sprite(screen.x, screen.y, team === 0 ? 'node' : 'node2')
-      .setScale(this.strategyGame.SCALED_SIZE)
+      .sprite(screen.x, screen.y, 'units')
+      .setFrame(team === 0 ? 0 : 1)
+      .setScale(this.scale)
       .setAlpha(0.5)
+      .setOrigin(0.5, 0.5)
     // .setInteractive()
     // this.sprite.on('pointerdown', this.select)
     this.active = true
@@ -32,6 +35,11 @@ export class Unit {
   update({ x, y, gridX, gridY, path, health = 100 }) {
     this.hex = this.strategyGame.getHexFromScreen(this.sprite)
     this.tween(x, y)
+    if (this.lastX > x) {
+      this.sprite.setScale(-this.scale, this.scale)
+    } else {
+      this.sprite.setScale(this.scale, this.scale)
+    }
     this.gridX = gridX
     this.gridY = gridY
     this.path = path
@@ -40,6 +48,7 @@ export class Unit {
     if (this.health <= 0) {
       this.destroy()
     }
+    this.lastX = x
   }
 
   destroy() {

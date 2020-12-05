@@ -16,7 +16,7 @@ export class Button extends Phaser.GameObjects.Sprite {
   ) {
     super(scene, x, y, texture)
     scene.add.existing(this)
-    this.text = scene.add.text(this.x, this.y, label)
+    this.text = scene.add.text(this.x, this.y, label).setOrigin(0.5)
 
     this.setFrame(outFrame)
       .setInteractive()
