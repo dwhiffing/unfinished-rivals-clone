@@ -20,20 +20,23 @@ export default class extends Phaser.Scene {
     this.activeUnit = null
     this.input.on('pointermove', this.onMoveMouse.bind(this))
     this.input.on('pointerdown', this.onClickMouse.bind(this))
-
     this.ui = new Interface(this)
+
     this.updateState(this.room.state)
     this.room.onStateChange(this.updateState)
   }
 
   update() {
+    if (this.phaseIndex === -1) return
     this.ui.update()
   }
 
   updateState = (serverState) => {
     const state = serverState.toJSON()
 
-    if (state.phaseIndex === -1) return
+    if (typeof state.phaseIndex !== 'number' || state.phaseIndex === -1) return
+
+    if (!this.ui.started) this.ui.start()
 
     this.strategyGame.clientSyncState(state)
 

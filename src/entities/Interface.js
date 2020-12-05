@@ -6,6 +6,30 @@ export class Interface {
   constructor(scene) {
     this.scene = scene
 
+    this.connectionText = this.scene.add
+      .text(
+        this.scene.cameras.main.width / 2,
+        this.scene.cameras.main.height / 2,
+        'Waiting for another player...',
+        { ...textOpts },
+      )
+      .setOrigin(0.5)
+  }
+
+  start() {
+    this.connectionText.destroy()
+    this.started = true
+    this.redHealthText = this.scene.add
+      .text(150, 40, '100', { ...textOpts, color: PAD_STATUS_COLORS[1] })
+      .setOrigin(0.5)
+
+    this.blueHealthText = this.scene.add
+      .text(this.scene.cameras.main.width - 150, 40, '100', {
+        ...textOpts,
+        color: PAD_STATUS_COLORS[2],
+      })
+      .setOrigin(0.5)
+
     this.chargeText = this.scene.add
       .text(this.scene.cameras.main.width / 2, 40, '0', textOpts)
       .setOrigin(0.5)
@@ -13,9 +37,14 @@ export class Interface {
   }
 
   update() {
+    if (!this.started) return
+
     this.chargeText.style.color =
       PAD_STATUS_COLORS[this.scene.strategyGame.chargeIndex + 1]
     this.chargeText.text = this.scene.strategyGame.charge
+    const players = this.scene.strategyGame.players || []
+    this.redHealthText.text = players[0] ? players[0].health.toString() : '0'
+    this.blueHealthText.text = players[1] ? players[1].health.toString() : '0'
 
     this.clear()
     const { activeUnit, lastHoveredHex, strategyGame } = this.scene
@@ -43,6 +72,6 @@ export class Interface {
   }
 
   clear() {
-    this.lineGraphics.clear()
+    if (this.lineGraphics) this.lineGraphics.clear()
   }
 }
