@@ -1,66 +1,44 @@
+import { PAD_COLORS_OCT, GREYS, GREENS } from '../constants'
+
 export class Hex {
   constructor(scene, hex) {
     this.scene = scene
-    const { x, y } = scene.strategyGame.getScreenFromHex(hex)
     this.hex = hex
     this.index = 0
-    const offset = 0
-    const modifier = 1
-    // const offset = 100
-    // const modifier = hex.y / 50 + 0.6
-    this.sprite = this.scene.add
-      .quad(x, offset + y * modifier, 'hexagon')
-      .setScale(
-        scene.strategyGame.SCALED_SIZE,
-        scene.strategyGame.SCALED_SIZE * modifier,
-      )
+    this.scale = scene.strategyGame.SCALED_SIZE
 
+    const { x, y } = scene.strategyGame.getScreenFromHex(hex)
+    this.sprite = this.scene.add.quad(x, y, 'hexagon').setScale(this.scale)
+    this.padBorder = this.scene.add.quad(x, y, 'hexagon').setScale(this.scale)
+    this.highlight = this.scene.add.quad(x, y, 'hexagon').setScale(this.scale)
+
+    this.padBorder.setFrame(2)
+    this.highlight.setFrame(1)
     this.alphaQuad(this.sprite, 0)
-
-    this.padBorder = this.scene.add
-      .quad(x, offset + y * modifier, 'hexagon')
-      .setScale(
-        scene.strategyGame.SCALED_SIZE,
-        scene.strategyGame.SCALED_SIZE * modifier,
-      )
-      .setFrame(2)
-
     this.alphaQuad(this.padBorder, 0)
-    this.highlight = this.scene.add
-      .quad(x, offset + y * modifier, 'hexagon')
-      .setScale(
-        scene.strategyGame.SCALED_SIZE,
-        scene.strategyGame.SCALED_SIZE * modifier,
-      )
-      .setFrame(1)
     this.alphaQuad(this.highlight, 0)
+    this.greyTint = Phaser.Math.RND.pick(GREYS)
+    this.greenTint = Phaser.Math.RND.pick(GREENS)
     // this.scene.add
-    //   .text(x, y, hex.x.toString() + ',' + hex.y, {
-    //     fontSize: 15,
-    //   })
+    //   .text(x, y, hex.x.toString() + ',' + hex.y, {fontSize: 15})
     //   .setOrigin(0.5)
-    this.greyTint = Phaser.Math.RND.pick([
-      0x75786b,
-      0x888876,
-      0x868575,
-      0x737e6b,
-      0x6b7764,
-    ])
-    this.greenTint = Phaser.Math.RND.pick([
-      0x5e9956,
-      0x7ea559,
-      0x648160,
-      0x506b4a,
-      0x5d914a,
-      0x538d4d,
-      0x527a4e,
-      0x667550,
-      0x6d8150,
-    ])
+  }
+
+  setStatus(status) {
+    this.tintQuad(this.padBorder, PAD_COLORS_OCT[status + 1])
+  }
+
+  select() {
+    this.alphaQuad(this.highlight, 0.5)
+  }
+
+  deselect() {
+    this.alphaQuad(this.highlight, 0)
   }
 
   setIndex(i = this.index) {
     if (this._hasSetIndex) return
+
     this._hasSetIndex = true
     this.index = i
     this.sprite.resetColors()
@@ -69,45 +47,20 @@ export class Hex {
     this.tintQuad(this.sprite, this.greenTint)
 
     if (i === 1) {
-      this.tintQuad(this.sprite, this.greyTint)
       this.sprite.setFrame(4)
-    }
-    if (i === 2) {
+      this.tintQuad(this.sprite, this.greyTint)
+    } else if (i === 2) {
       this.padBorder.setFrame(3)
       this.alphaQuad(this.padBorder, 1)
-    }
-    if (i === 3) {
-      let angle = 300
-      if (
-        this.scene.strategyGame.hexes.hexGrid
-          .neighborsOf(this.hex, ['SW', 'SE'])
-          .every((h) => h.index === 3)
-      ) {
-        angle = 180
-      }
-      if (
-        this.scene.strategyGame.hexes.hexGrid
-          .neighborsOf(this.hex, ['E', 'NE'])
-          .every((h) => h.index === 3)
-      ) {
-        angle = 60
-      }
-      this.alphaQuad(this.padBorder, 1)
-      this.padBorder.setAngle(angle)
+    } else if (i === 3) {
       this.tintQuad(this.sprite, 0x7f8674)
-    }
-    if (i === 4) {
+      this.alphaQuad(this.padBorder, 1)
+      this.padBorder.setAngle(this.getPadAngle())
+    } else if (i === 4) {
       this.sprite.setFrame(4)
-      if (this.sprite.x > this.scene.cameras.main.width / 2) {
-        this.tintQuad(this.sprite, PAD_STATUS_COLORS[2])
-      } else {
-        this.tintQuad(this.sprite, PAD_STATUS_COLORS[1])
-      }
+      const index = this.sprite.x > this.scene.cameras.main.width / 2 ? 2 : 1
+      this.tintQuad(this.sprite, PAD_COLORS_OCT[index])
     }
-  }
-
-  setStatus(status) {
-    this.tintQuad(this.padBorder, PAD_STATUS_COLORS[status + 1])
   }
 
   alphaQuad(quad, alpha) {
@@ -124,19 +77,15 @@ export class Hex {
     quad.bottomRightColor = tint
   }
 
-  select() {
-    this.alphaQuad(this.highlight, 0.5)
-    // if (this.index !== 1) this.sprite.setFrame(1)
+  getPadAngle = () => {
+    let angle = 300
+    if (this.checkForPads(['SW', 'SE'])) angle = 180
+    if (this.checkForPads(['E', 'NE'])) angle = 60
+    return angle
   }
 
-  deselect() {
-    this.alphaQuad(this.highlight, 0)
-    // if (this.index !== 1) this.sprite.setFrame(0)
-  }
-
-  hover() {
-    this.select()
-  }
+  checkForPads = (dir) =>
+    this.scene.strategyGame.hexes.hexGrid
+      .neighborsOf(this.hex, dir)
+      .every((h) => h.index === 3)
 }
-
-const PAD_STATUS_COLORS = [0xcccccc, 0x2754fa, 0xef4a3c, 0xe5dc12]

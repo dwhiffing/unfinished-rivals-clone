@@ -1,6 +1,5 @@
+import { PAD_COLORS_HEX } from '../constants'
 import { Button } from './Button'
-
-const PAD_STATUS_COLORS = ['#ffffff', '#ef4a3c', '#2754fa', '#e5dc12']
 
 const textOpts = { fontSize: 40, align: 'center' }
 
@@ -33,7 +32,7 @@ export class Interface {
     this.connectionText.setAlpha(0)
     this.started = true
     this.redHealthText = this.scene.add
-      .text(150, 40, '100', { ...textOpts, color: PAD_STATUS_COLORS[1] })
+      .text(150, 40, '100', { ...textOpts, color: PAD_COLORS_HEX[1] })
       .setOrigin(0.5)
 
     this.moneyText = this.scene.add
@@ -45,7 +44,7 @@ export class Interface {
     this.blueHealthText = this.scene.add
       .text(this.scene.cameras.main.width - 150, 40, '100', {
         ...textOpts,
-        color: PAD_STATUS_COLORS[2],
+        color: PAD_COLORS_HEX[2],
       })
       .setOrigin(0.5)
 
@@ -69,7 +68,7 @@ export class Interface {
     if (this.scene.strategyGame.phaseIndex === 1 && !this.ended) this.end()
 
     this.chargeText.style.color =
-      PAD_STATUS_COLORS[this.scene.strategyGame.chargeIndex + 1]
+      PAD_COLORS_HEX[this.scene.strategyGame.chargeIndex + 1]
     this.chargeText.text = this.scene.strategyGame.charge
     const players = this.scene.strategyGame.players || []
     this.redHealthText.text = players[0] ? players[0].health.toString() : '0'

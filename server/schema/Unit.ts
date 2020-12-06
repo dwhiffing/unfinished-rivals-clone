@@ -1,18 +1,5 @@
 import { type, ArraySchema, Schema } from '@colyseus/schema'
-
-class Coord extends Schema {
-  @type('number')
-  x
-
-  @type('number')
-  y
-
-  constructor({ x = 0, y = 0 } = {}) {
-    super()
-    this.x = x
-    this.y = y
-  }
-}
+import { Coord } from './Coord'
 
 export class Unit extends Schema {
   @type('number')
@@ -48,31 +35,18 @@ export class Unit extends Schema {
   @type([Coord])
   path = new ArraySchema<Coord>()
 
-  constructor({
-    id,
-    x,
-    y,
-    gridX,
-    gridY,
-    path,
-    destination,
-    team,
-    health,
-    damage,
-    speed,
-  }) {
+  constructor(args) {
     super()
-
-    this.id = id
-    this.gridX = gridX
-    this.gridY = gridY
-    this.team = team
-    this.health = health
-    this.damage = damage
-    this.speed = speed
-    this.x = x
-    this.y = y
-    this.path = path.map((p) => new Coord(p))
-    this.destination = destination ? new Coord(destination) : null
+    this.id = args.id
+    this.gridX = args.gridX
+    this.gridY = args.gridY
+    this.team = args.team
+    this.health = args.health
+    this.damage = args.damage
+    this.speed = args.speed
+    this.x = args.x
+    this.y = args.y
+    this.path = args.path.map((p) => new Coord(p))
+    this.destination = args.destination ? new Coord(args.destination) : null
   }
 }

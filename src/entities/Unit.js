@@ -1,98 +1,82 @@
-const duration = 200
+import { TICK_RATE } from '../../lib/constants'
 
 export class Unit {
-  constructor(scene, { gridX, gridY, id, team, health = 100, damage = 10 }) {
+  constructor(scene, unitOpts = {}) {
     this.scene = scene
     this.strategyGame = scene.strategyGame
-    this.id = id
-    this.team = team
-    this.health = health
-    this.damage = damage
-    this.gridX = gridX
-    this.gridY = gridY
     this.modelCount = 5
     this.path = []
-
-    this.hex = this.strategyGame.hexes.get({ x: gridX, y: gridY })
-
-    const screen = this.strategyGame.getScreenFromHex(this.hex)
-    this.healthText = this.scene.add.text(0, 0, this.health.toString())
-    this.x = screen.x
-    this.y = screen.y
+    this.healthText = this.scene.add.text(0, 0, '')
     this.scale = this.strategyGame.SCALED_SIZE * 0.6
-
     this.sprites = {}
+    this.id = unitOpts.id
+    this.damage = unitOpts.damage
+    this.team = unitOpts.team
+
     for (var index = 0; index < this.modelCount; index++) {
       const r = this.strategyGame.tileSize * 0.5
       const x = r * Math.cos((2 * Math.PI * index) / this.modelCount)
       const y = r * Math.sin((2 * Math.PI * index) / this.modelCount)
       this.sprites[index] = this.scene.add
         .sprite(x, y, 'units')
-        .setFrame(team === 0 ? 1 : 0)
+        .setFrame(unitOpts.team === 0 ? 1 : 0)
         .setScale(this.scale)
         .setAlpha(0.5)
         .setOrigin(0.45, 0.7)
     }
-    this.container = this.scene.add.container(this.x, this.y)
+    this.container = this.scene.add.container(unitOpts.x, unitOpts.y)
     this.container.add([...Object.values(this.sprites), this.healthText])
-    this.active = true
+
+    this.update(unitOpts)
   }
 
-  update({ x, y, gridX, gridY, path, health = 100, ...rest }) {
-    this.hex = this.strategyGame.getHexFromScreen(this.container)
+  update({ x, y, gridX, gridY, path, health = 100 }) {
     this.tween(x, y)
-    if (this.lastX > x || (this.lastX === x && this.team === 1)) {
-      Object.values(this.sprites).forEach((s) =>
-        s.setScale(-this.scale, this.scale),
-      )
-    } else {
-      Object.values(this.sprites).forEach((s) =>
-        s.setScale(this.scale, this.scale),
-      )
-    }
+
+    const isLeft = this.lastX > x || (this.lastX === x && this.team === 1)
+    this.setScale(isLeft ? -1 : 1, 1)
+    this.lastX = x
+    this.hex = this.strategyGame.getHexFromScreen(this.container)
     this.gridX = gridX
     this.gridY = gridY
     this.path = path
-    this.healthText.text = health.toString()
+
     this.health = health
-    if (this.health <= 0) {
-      this.destroy()
-    }
-    this.lastX = x
+    this.healthText.text = health.toString()
+    if (this.health <= 0) this.destroy()
   }
 
   destroy() {
     Object.values(this.sprites).forEach((s) => s.destroy())
-    this.active = false
     if (this.scene.activeUnit === this) this.scene.activeUnit = null
     this.healthText.destroy()
   }
 
   select() {
-    if (!this.active) return
     Object.values(this.sprites).forEach((s) => s.setAlpha(1))
+    return this
   }
 
   deselect() {
-    if (!this.active) return
     Object.values(this.sprites).forEach((s) => s.setAlpha(0.5))
+    return this
+  }
+
+  setScale = (x, y) => {
+    Object.values(this.sprites).forEach((s) =>
+      s.setScale(x * this.scale, y * this.scale),
+    )
   }
 
   tween(_x, _y) {
     const x = _x * this.scene.strategyGame.SCALE
     const y = _y * this.scene.strategyGame.SCALE
-    this.scene.tweens.add({
-      targets: this.container,
-      duration,
-      x,
-      y,
-    })
+    const targets = this.container
+    this.scene.tweens.add({ targets, duration: TICK_RATE, x, y })
   }
 
   move({ x, y }) {
-    if (!this.active) return
     const unitId = this.id
     this.scene.room.send('Move', { unitId, x, y })
-    // this.deselect()
   }
 }

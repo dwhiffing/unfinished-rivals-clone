@@ -11,19 +11,25 @@ export default class extends Phaser.Scene {
   init(params) {
     this.room = params.room
     this.room.onLeave(this.onLeave)
+    this.unitSprites = []
+    this.activeUnit = null
   }
 
   create() {
     this.strategyGame = new StrategyGame()
     this.strategyGame.init((hex) => new Hex(this, hex))
-    this.unitSprites = []
-    this.activeUnit = null
+    this.ui = new Interface(this)
+    this.syncState(this.room.state)
+    this.room.onStateChange(this.syncState)
+
     this.input.on('pointermove', this.onMoveMouse.bind(this))
     this.input.on('pointerdown', this.onClickMouse.bind(this))
-    this.ui = new Interface(this)
+  }
 
-    this.updateState(this.room.state)
-    this.room.onStateChange(this.updateState)
+  start = (state) => {
+    this.started = true
+    this.ui.start()
+    this.player = state.players.find((p) => p.id === this.room.sessionId)
   }
 
   update() {
@@ -31,68 +37,64 @@ export default class extends Phaser.Scene {
     this.ui.update()
   }
 
-  updateState = (serverState) => {
+  syncState = (serverState) => {
     const state = serverState.toJSON()
-
     if (typeof state.phaseIndex !== 'number' || state.phaseIndex === -1) return
 
-    if (!this.ui.started) this.ui.start()
-
+    if (!this.started) this.start(state)
     this.strategyGame.clientSyncState(state)
-
-    if (!this.player)
-      this.player = state.players.find((p) => p.id === this.room.sessionId)
-
-    state.units.forEach((serverUnit) => {
-      const unit = this.unitSprites.find((u) => u.id === serverUnit.id)
-      if (unit) return unit.update(serverUnit)
-      const clientUnit = new Unit(this, serverUnit)
-      this.unitSprites.push(clientUnit)
-      clientUnit.update(serverUnit)
-    })
-    this.unitSprites.forEach((u) => {
-      if (!state.units.some((su) => su.id === u.id)) {
-        u.destroy()
-      }
-    })
+    this.unitSprites = this.updateUnits(state)
   }
 
   onMoveMouse(pointer) {
     if (this.strategyGame.phaseIndex === -1) return
+
     const hoveredHex = this.strategyGame.getHexFromScreen(pointer)
     if (this.activeHex || !hoveredHex) return
 
     if (this.lastHoveredHex) this.lastHoveredHex.deselect()
     this.lastHoveredHex = hoveredHex.object
-    this.lastHoveredHex.hover()
+    this.lastHoveredHex.select()
   }
 
   onClickMouse(pointer) {
-    this.ui.clear()
     if (this.strategyGame.phaseIndex === -1) return
+    this.ui.clear()
+
     const hex = this.strategyGame.getHexFromScreen(pointer)
-    if (!hex) return
-    const unit = this.unitSprites.find(
-      (u) => u.gridX === hex.x && u.gridY === hex.y,
-    )
-    if (
-      this.activeUnit &&
-      this.activeUnit.active &&
-      hex &&
-      !this.strategyGame.isOccupied(hex, this.activeUnit)
-    ) {
-      this.activeUnit.move(hex)
-      return
-    }
-    if (unit && unit.team === this.player.team && unit.active) {
-      this.activeUnit && this.activeUnit.deselect()
-      this.activeUnit = unit
-      unit.select()
+    if (hex) {
+      if (this.activeUnit) this.activeUnit.move(hex)
+      this.selectUnit(this.unitSprites.find(({ id }) => hex.unit?.id === id))
     }
   }
 
   onLeave = (code) => {
     if (code === 1000) localStorage.removeItem(this.room.id)
     this.scene.start('Lobby')
+  }
+
+  selectUnit = (unit) => {
+    if (unit?.team !== this.player.team) return
+    this.activeUnit?.deselect()
+    this.activeUnit = unit.select()
+  }
+
+  updateUnits = (state) => {
+    state.units.forEach((serverUnit) => {
+      const sprite = this.unitSprites.find((u) => u.id === serverUnit.id)
+      if (sprite) {
+        sprite.update(serverUnit)
+      } else {
+        const newUnit = new Unit(this, serverUnit)
+        this.unitSprites.push(newUnit)
+        this.selectUnit(newUnit)
+      }
+    })
+
+    return this.unitSprites.filter((u) => {
+      const isPresent = state.units.some((su) => su.id === u.id)
+      if (!isPresent) u.destroy()
+      return isPresent
+    })
   }
 }

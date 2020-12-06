@@ -2,8 +2,7 @@ import { Room, Client, ServerError } from 'colyseus'
 import { RoomState } from '../schema'
 import { Dispatcher } from '@colyseus/command'
 import * as Commands from '../commands'
-
-const TICK_RATE = 200
+import { TICK_RATE } from '../../lib/constants'
 
 export class RivalsRoom extends Room<RoomState> {
   maxClients = 2
