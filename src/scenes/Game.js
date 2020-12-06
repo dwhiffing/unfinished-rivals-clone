@@ -3,6 +3,8 @@ import { Hex } from '../entities/Hex'
 import { Unit } from '../entities/Unit'
 import { Interface } from '../entities/Interface'
 
+// TODO: fog of war
+// this means pathfinding needs to be based on what can be seen by the client
 export default class extends Phaser.Scene {
   constructor() {
     super({ key: 'Game' })

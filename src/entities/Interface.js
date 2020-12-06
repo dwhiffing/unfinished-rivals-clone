@@ -83,7 +83,15 @@ export class Interface {
     this.lineGraphics.lineStyle(5, 0xffffff, 1.0)
     this.lineGraphics.beginPath()
     this.lineGraphics.moveTo(activeUnit.container.x, activeUnit.container.y)
-    if (this._lastHovered !== lastHoveredHex || !this.path) {
+    const destinationChanged =
+      this._lastDestination?.x !== activeUnit.destination?.x ||
+      this._lastDestination?.y !== activeUnit.destination?.y
+    this._lastDestination = activeUnit.destination
+    if (
+      this._lastHovered !== lastHoveredHex ||
+      !this.path ||
+      destinationChanged
+    ) {
       this.path = strategyGame.hexes.getPath(
         activeUnit,
         activeUnit.hex,
@@ -91,9 +99,12 @@ export class Interface {
       )
       this._lastHovered = lastHoveredHex
     }
-    if (this.path.length === 0) return
 
-    this.path.forEach((hex, i) => {
+    const path = activeUnit.path.length > 0 ? activeUnit.path : this.path
+
+    if (path.length === 0) return
+
+    path.forEach((hex, i) => {
       const coord = strategyGame.hexes.getScreenFromHex(hex)
       this.lineGraphics.lineTo(coord.x, coord.y)
     })

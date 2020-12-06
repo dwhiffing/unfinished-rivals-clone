@@ -41,7 +41,17 @@ export class Unit {
     this.update(unitOpts)
   }
 
-  update({ x, y, gridX, gridY, path, health = 100, fireRateCounter, target }) {
+  update({
+    x,
+    y,
+    gridX,
+    gridY,
+    path,
+    health = 100,
+    fireRateCounter,
+    target,
+    destination,
+  }) {
     this.tween(x, y)
     const targetUnit = this.scene.unitSprites.find((u) => u.id === target)
     this.graphics.clear()
@@ -80,6 +90,7 @@ export class Unit {
     this.hex = this.strategyGame.hexes.getHexFromScreen(this.container)
     this.gridX = gridX
     this.gridY = gridY
+    this.destination = destination
     this.path = path
 
     this.health = health
