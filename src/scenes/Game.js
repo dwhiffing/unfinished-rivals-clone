@@ -13,6 +13,7 @@ export default class extends Phaser.Scene {
     this.room.onLeave(this.onLeave)
     this.unitSprites = []
     this.activeUnit = null
+    this.started = false
   }
 
   create() {

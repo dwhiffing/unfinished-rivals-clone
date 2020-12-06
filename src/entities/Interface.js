@@ -29,7 +29,6 @@ export class Interface {
   }
 
   start() {
-    // TODO: sometimes this isn't called when the other player joins
     this.connectionText.setAlpha(0)
     this.started = true
     this.redHealthText = this.scene.add
