@@ -1,20 +1,21 @@
-import { TICK_RATE } from '../../lib/constants'
+import { TICK_RATE, TILE_SIZE } from '../../lib/constants'
 
+// TODO: draw lasers for units shooting eachother
 export class Unit {
   constructor(scene, unitOpts = {}) {
     this.scene = scene
     this.strategyGame = scene.strategyGame
     this.modelCount = 5
     this.path = []
-    this.healthText = this.scene.add.text(0, 0, '')
-    this.scale = this.strategyGame.SCALED_SIZE * 0.6
+    this.healthText = this.scene.add.text(0, -50, '').setOrigin(0.5)
+    this.scale = this.strategyGame.hexes.scale * 0.6
     this.sprites = {}
     this.id = unitOpts.id
     this.damage = unitOpts.damage
     this.team = unitOpts.team
 
     for (var index = 0; index < this.modelCount; index++) {
-      const r = this.strategyGame.tileSize * 0.5
+      const r = TILE_SIZE * 0.5
       const x = r * Math.cos((2 * Math.PI * index) / this.modelCount)
       const y = r * Math.sin((2 * Math.PI * index) / this.modelCount)
       this.sprites[index] = this.scene.add
@@ -36,7 +37,7 @@ export class Unit {
     const isLeft = this.lastX > x || (this.lastX === x && this.team === 1)
     this.setScale(isLeft ? -1 : 1, 1)
     this.lastX = x
-    this.hex = this.strategyGame.getHexFromScreen(this.container)
+    this.hex = this.strategyGame.hexes.getHexFromScreen(this.container)
     this.gridX = gridX
     this.gridY = gridY
     this.path = path
@@ -69,8 +70,8 @@ export class Unit {
   }
 
   tween(_x, _y) {
-    const x = _x * this.scene.strategyGame.SCALE
-    const y = _y * this.scene.strategyGame.SCALE
+    const x = _x
+    const y = _y
     const targets = this.container
     this.scene.tweens.add({ targets, duration: TICK_RATE, x, y })
   }

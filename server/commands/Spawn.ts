@@ -1,7 +1,7 @@
 import { Command } from '@colyseus/command'
 import { RoomState } from '../schema'
 import { SyncCommand } from './Sync'
-import { UNIT_COST } from '../../lib/strategyGame'
+import { UNIT_COST } from '../../lib/unitManager'
 
 export class SpawnCommand extends Command<RoomState, { playerId: string }> {
   validate({ playerId }) {
@@ -10,7 +10,7 @@ export class SpawnCommand extends Command<RoomState, { playerId: string }> {
   }
 
   execute({ playerId }) {
-    this.state.strategyGame.spawn({ playerId })
+    this.state.strategyGame.unitManager.spawn({ playerId })
     return [new SyncCommand()]
   }
 }

@@ -72,7 +72,7 @@
 // kodiak
 
 export const PAD_COLORS_HEX = ['#ffffff', '#ef4a3c', '#2754fa', '#e5dc12']
-export const PAD_COLORS_OCT = [0xcccccc, 0x2754fa, 0xef4a3c, 0xe5dc12]
+export const PAD_COLORS_OCT = [0xcccccc, 0x2754fa, 0xef4a3c, 0x00dcff]
 export const GREENS = [
   0x5e9956,
   0x7ea559,

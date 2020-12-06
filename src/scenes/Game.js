@@ -27,6 +27,7 @@ export default class extends Phaser.Scene {
   }
 
   start = (state) => {
+    if (state.players.length < 2) return
     this.started = true
     this.ui.start()
     this.player = state.players.find((p) => p.id === this.room.sessionId)
@@ -40,7 +41,6 @@ export default class extends Phaser.Scene {
   syncState = (serverState) => {
     const state = serverState.toJSON()
     if (typeof state.phaseIndex !== 'number' || state.phaseIndex === -1) return
-
     if (!this.started) this.start(state)
     this.strategyGame.clientSyncState(state)
     this.unitSprites = this.updateUnits(state)
@@ -49,7 +49,7 @@ export default class extends Phaser.Scene {
   onMoveMouse(pointer) {
     if (this.strategyGame.phaseIndex === -1) return
 
-    const hoveredHex = this.strategyGame.getHexFromScreen(pointer)
+    const hoveredHex = this.strategyGame.hexes.getHexFromScreen(pointer)
     if (this.activeHex || !hoveredHex) return
 
     if (this.lastHoveredHex) this.lastHoveredHex.deselect()
@@ -61,7 +61,7 @@ export default class extends Phaser.Scene {
     if (this.strategyGame.phaseIndex === -1) return
     this.ui.clear()
 
-    const hex = this.strategyGame.getHexFromScreen(pointer)
+    const hex = this.strategyGame.hexes.getHexFromScreen(pointer)
     if (hex) {
       if (this.activeUnit) this.activeUnit.move(hex)
       this.selectUnit(this.unitSprites.find(({ id }) => hex.unit?.id === id))

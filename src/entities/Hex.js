@@ -5,9 +5,9 @@ export class Hex {
     this.scene = scene
     this.hex = hex
     this.index = 0
-    this.scale = scene.strategyGame.SCALED_SIZE
+    this.scale = scene.strategyGame.hexes.scale
 
-    const { x, y } = scene.strategyGame.getScreenFromHex(hex)
+    const { x, y } = scene.strategyGame.hexes.getScreenFromHex(hex)
     this.sprite = this.scene.add.quad(x, y, 'hexagon').setScale(this.scale)
     this.padBorder = this.scene.add.quad(x, y, 'hexagon').setScale(this.scale)
     this.highlight = this.scene.add.quad(x, y, 'hexagon').setScale(this.scale)
