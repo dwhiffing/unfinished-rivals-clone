@@ -27,6 +27,14 @@ export class Unit {
     }
     this.container = this.scene.add.container(unitOpts.x, unitOpts.y)
     this.container.add([...Object.values(this.sprites), this.healthText])
+    const size = TILE_SIZE * 1.5
+    this.container.setInteractive(
+      new Phaser.Geom.Rectangle(-size / 2, -size / 2, size, size),
+      Phaser.Geom.Rectangle.Contains,
+    )
+    this.container.on('pointerdown', () => {
+      this.scene.selectUnit(this)
+    })
 
     this.update(unitOpts)
   }
@@ -34,9 +42,12 @@ export class Unit {
   update({ x, y, gridX, gridY, path, health = 100 }) {
     this.tween(x, y)
 
-    const isLeft = this.lastX > x || (this.lastX === x && this.team === 1)
-    this.setScale(isLeft ? -1 : 1, 1)
-    this.lastX = x
+    if (this.lastX !== x) {
+      const isLeft = this.lastX > x || (this.lastX === x && this.team === 1)
+      this.setScale(isLeft ? -1 : 1, 1)
+      this.lastX = x
+    }
+
     this.hex = this.strategyGame.hexes.getHexFromScreen(this.container)
     this.gridX = gridX
     this.gridY = gridY

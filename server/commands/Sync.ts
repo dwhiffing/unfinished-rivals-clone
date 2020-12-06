@@ -14,13 +14,12 @@ export class SyncCommand extends Command<RoomState> {
         ...this.state.strategyGame.hexes.hexGrid.map((h) => new Hex(h)),
       )
     }
+    let shouldUpdatePlayers = this.state.players.some((player, index) => {
+      const other = strat.players[index]
+      return other.health !== player.health || other.money !== player.money
+    })
 
-    if (
-      this.state.players.some((player, index) => {
-        const other = strat.players[index]
-        return other.health !== player.health || other.money !== player.money
-      })
-    ) {
+    if (shouldUpdatePlayers) {
       this.state.players = new ArraySchema<Player>(
         ...strat.players.map((player) => new Player(player)),
       )

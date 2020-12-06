@@ -36,6 +36,7 @@ export default class extends Phaser.Scene {
   update() {
     if (this.phaseIndex === -1) return
     this.ui.update()
+    this._justSelected = false
   }
 
   syncState = (serverState) => {
@@ -63,8 +64,7 @@ export default class extends Phaser.Scene {
 
     const hex = this.strategyGame.hexes.getHexFromScreen(pointer)
     if (hex) {
-      if (this.activeUnit) this.activeUnit.move(hex)
-      this.selectUnit(this.unitSprites.find(({ id }) => hex.unit?.id === id))
+      if (this.activeUnit && !this._justSelected) this.activeUnit.move(hex)
     }
   }
 
@@ -74,8 +74,9 @@ export default class extends Phaser.Scene {
   }
 
   selectUnit = (unit) => {
-    if (unit?.team !== this.player.team) return
+    if (!unit || unit.team !== this.player.team) return
     this.activeUnit?.deselect()
+    this._justSelected = true
     this.activeUnit = unit.select()
   }
 

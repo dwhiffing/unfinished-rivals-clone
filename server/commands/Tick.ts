@@ -9,6 +9,8 @@ export class TickCommand extends Command<RoomState> {
       if (this.state.counter === -1) this.state.counter = 20
       this.state.counter -= 1
 
+      // TODO: fix indexOf bug after this disconnect is triggered sometimes
+
       if (this.state.counter < 1) {
         this.state.phaseIndex = 2
         this.room.disconnect()
