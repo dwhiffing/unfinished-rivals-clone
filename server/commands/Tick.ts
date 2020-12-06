@@ -13,7 +13,10 @@ export class TickCommand extends Command<RoomState> {
 
       if (this.state.counter < 1) {
         this.state.phaseIndex = 2
-        this.room.disconnect()
+        if (this.room) {
+          this.room.disconnect()
+          this.room = null
+        }
       }
 
       return []
