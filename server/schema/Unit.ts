@@ -27,10 +27,19 @@ export class Unit extends Schema {
   destination
 
   @type('number')
+  target
+
+  @type('number')
   health
 
   @type('number')
   speed
+
+  @type('number')
+  fireRateCounter
+
+  @type('number')
+  fireRate
 
   @type([Coord])
   path = new ArraySchema<Coord>()
@@ -44,6 +53,9 @@ export class Unit extends Schema {
     this.health = args.health
     this.damage = args.damage
     this.speed = args.speed
+    this.target = args.target
+    this.fireRate = args.fireRate
+    this.fireRateCounter = args.fireRateCounter
     this.x = args.x
     this.y = args.y
     this.path = args.path.map((p) => new Coord(p))

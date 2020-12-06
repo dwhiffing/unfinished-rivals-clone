@@ -76,6 +76,7 @@ export default class extends Phaser.Scene {
 
   selectUnit = (unit) => {
     if (!unit || unit.team !== this.player.team) return
+    if (this.activeUnit === unit) return
     this.activeUnit?.deselect()
     this._justSelected = true
     this.activeUnit = unit.select()
